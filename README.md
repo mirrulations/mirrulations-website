@@ -3,6 +3,14 @@
 
 This repository contains the source code for the Mirrulations Project website. The Mirrulations Project aims to provide a user-friendly interface for searching and retrieving data from [regulations.gov](https://www.regulations.gov/). This website interacts with an AWS API Gateway to fetch and display data based on user input.
 
+### <ins>**How to Start up Local Development Enviroment**<ins>
+1. Clone the API repo here "https://github.com/mirrulations/API/" and this rep, the mirrulations-website repo 
+2. Run ‘npm install dotenv vite’ on your terminal to install vite
+3. Open the API repo and run ‘sam local start-api’
+4. Open the mirrulations-website repo and run ‘npm run dev’
+5. Navigate to http://127.0.0.1:5500/index.html, you should see your local environment running
+
+
 ### <ins>**Start Up AWS Amplify:**</ins>
 1. On [AWS](https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#) search for _**AWS Amplify**_.
 2. When you select AWS Amplify, you will be brought to the [main page](https://us-east-1.console.aws.amazon.com/amplify). Click on _**Deploy an app**_.
