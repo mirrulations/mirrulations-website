@@ -42,13 +42,53 @@ This repository contains the source code for the Mirrulations Project website. T
 
 ### <ins>**How To Install A Vite Enviroment For Local Use:**</ins>
 1. In the terminal, type: `npm install vite`.
-    - If you get a error for npm, try `brew upgrade npm` and `brew cleanup` ([stackoverflow](https://stackoverflow.com/questions/53828891/dyld-library-not-loaded-usr-local-opt-icu4c-lib-libicui18n-62-dylib-error-run))
-2. Make a _**.env**_ file:
+2. Create a file named _**vite.config.js**_.
+    - Right click on your root directory.
+    - Click _**New File**_.
+    - Name it `vite.config.js`.
+3. Inside your _**vite.config.js**_ file put:
+``` 
+import { defineConfig, loadEnv } from 'vite';
+
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), 'VITE_');
+
+    return defineConfig({
+        server: {
+            host: 'localhost',
+            port: 5500
+        },
+        define: {
+            'import.meta.env': {
+                ...env,
+            }
+        }
+    });
+});
+```
+4. Inside the _**package.json**_ file put:
+```
+{
+  "name": "mirrulations-website",
+  "version": "1.0.0",
+  "description": "Website repo for Mirrulations",
+  "main": "app.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vite": "^6.1.0"
+  }
+}
+```
+5. Make a _**.env**_ file:
     - Right click in your root directory.
     - Name it `.env`.
-    - Inside put `VITE_GATEWAY_API_URL=<Your API GATEWAY LINK HERE>`.
-        - For the current moment, this API link should be `http://localhost:3000/dummy`
-3. To run locally type `npm run dev` and go to http://localhost:5500/.
+    - Inside put `VITE_GATEWAY_API_URL=(Your API GATEWAY LINK HERE)`.
+6. To run locally type `npm run dev`.
+7. Start Live Server at port `5500`.
 
 ### <ins>How To Create a Github Actions Workflow:</ins>
 
