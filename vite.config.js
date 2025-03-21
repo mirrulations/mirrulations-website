@@ -19,6 +19,12 @@ export default defineConfig(({ mode }) => {
             'import.meta.env': {
                 ...env,
             }
+        },
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'javascript'), // Alias to access the javascript folder easily
+                'styles': path.resolve(__dirname, 'styles') // Alias to access the styles folder easily
+            }
         }
     };
 });
