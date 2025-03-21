@@ -1,21 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "/styles/styles.css";
 import ResultsSection from "./results";
 
-let API_GATEWAY_URL;
-if (import.meta.env.VITE_GATEWAY_API_URL) {
-    API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL;
-} else if (typeof GATEWAY_API_URL !== 'undefined') {
-    // Running on AWS Amplify
-    API_GATEWAY_URL = GATEWAY_API_URL;
-} else {
-    console.error("API Gateway URL is not set. Check your environment variables.");
-}
-
-if (!API_GATEWAY_URL) {
-    throw new Error("API Gateway URL is not set. Check your environment variables.");
-}
+const API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL || GATEWAY_API_URL;
 
 console.log("API_GATEWAY_URL:", API_GATEWAY_URL);
 
@@ -24,6 +13,15 @@ const SearchPage = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    if (!isAuthenticated) {
+      navigate("/auth");
+    }
+  }, [navigate]);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -65,13 +63,18 @@ const SearchPage = () => {
       handleSearch();
     }
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    setIsAuthenticated(false);
+    navigate("/auth");
+  };
+  
   return (
-    <div className="search-container">
-      <header>
+    <div className="search-container p-0">
         <h1 className="logo">Mirrulations</h1>
-      </header>
-
+        <button className="btn btn-secondary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
+          Logout
+        </button>
       <section className="search-section">
         <div id="search" className="d-flex justify-content-center">
           <input
@@ -98,8 +101,6 @@ const SearchPage = () => {
 
       {loading && <p id="loading-section" className="text-center mt-3">Loading...</p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-
-      <ResultsSection results={results} error={error} />
     </div>
   );
 };
