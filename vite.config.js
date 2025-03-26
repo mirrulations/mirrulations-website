@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path'; // Import the path module
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), 'VITE_');
@@ -7,6 +8,10 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [react()],
         resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'javascript'), // Alias to access the javascript folder easily
+                'styles': path.resolve(__dirname, 'styles') // Alias to access the styles folder easily
+            }
         },
         server: {
             host: 'localhost',
@@ -18,12 +23,6 @@ export default defineConfig(({ mode }) => {
         define: {
             'import.meta.env': {
                 ...env,
-            }
-        },
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, 'javascript'), // Alias to access the javascript folder easily
-                'styles': path.resolve(__dirname, 'styles') // Alias to access the styles folder easily
             }
         }
     };

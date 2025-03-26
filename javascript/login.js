@@ -5,6 +5,7 @@ let COG_CLIENT_ID;
 
 //User Pool ID vite ingestion
 // Check if the environment variable is defined (for local development with Vite)
+// Also checks if the environment variable is defined in the AWS Amplify console
 if (import.meta.env.VITE_COGNITO_USER_POOL_ID) {
     COG_USE_POOL_ID = import.meta.env.VITE_COGNITO_USER_POOL_ID;
 } else if (typeof USER_POOL_COG_AMP !== 'undefined') { //USER_POOL_COG_AMP is the enviroment variable set in the AWS Amplify console
@@ -18,8 +19,9 @@ if (!COG_USE_POOL_ID) {
     throw new Error("Cognito User Pool is not set. Check your environment variables.");
 }
 
-//Client ID vite ingestion
+// Client ID vite ingestion
 // Check if the environment variable is defined (for local development with Vite)
+// Also checks if the environment variable is defined in the AWS Amplify console
 if (import.meta.env.VITE_COGNITO_CLIENT_ID) {
     COG_CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID;
 } else if (typeof CLIENT_ID_COG_AMP !== 'undefined') { //CLIENT_ID_COG_AMP is the enviroment variable set in the AWS Amplify console

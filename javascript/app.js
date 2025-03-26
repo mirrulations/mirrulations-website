@@ -1,6 +1,8 @@
 let API_GATEWAY_URL;
 
+// AWS API Gateway URL vite ingestion
 // Check if the environment variable is defined (for local development with Vite)
+// Also checks if the environment variable is defined in the AWS Amplify console
 if (import.meta.env.VITE_GATEWAY_API_URL) {
     API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL;
 } else if (typeof GATEWAY_API_URL !== 'undefined') {
