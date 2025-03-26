@@ -1,67 +1,69 @@
 .search-container {
-    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("/assets/Capitol_Building.jpg") no-repeat center center fixed;
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  .logo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-  
-  .search-section {
-    display: flex;
-    width: 60%;
-    max-width: 800px;
-  }
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("/assets/Capitol_Building.jpg") no-repeat center center fixed;
+  background-size: cover; 
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-  #search {
-    width: 80vw;
-  }
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
 
-  #loading-section {
-    color: #fff
-  }
-  
-  .search-input {
-    width: 100px;
-    flex: 1;
-    padding: 15px;
-    font-size: 1.2rem;
-    border: none;
-  }
-  
-  .search-button {
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    background-color: #2a6bbf;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .search-button:hover {
-    background-color: #1f4e87;
-  }
+.search-section {
+  display: flex;
+  width: 60%;
+  max-width: 800px;
+}
 
-  #error-loader {
-    color: #fff;
-    font-size: 1.2rem;
-  }
-  
-  .footer  {
-    padding: 5px 10px;
-    background-color: #fff;
-    position: absolute;
-    bottom: 0;
-    border-radius: 5px;
-  }
+#search {
+  width: 80vw;
+}
+
+#loading-section {
+  color: #fff
+}
+
+.search-input {
+  width: 100px;
+  flex: 1;
+  padding: 15px;
+  font-size: 1.2rem;
+  border: none;
+}
+
+.search-button {
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  background-color: #2a6bbf;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #1f4e87;
+}
+
+#error-loader {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.footer  {
+  padding: 5px 10px;
+  background-color: #fff;
+  position: absolute;
+  bottom: 0;
+  border-radius: 5px;
+}

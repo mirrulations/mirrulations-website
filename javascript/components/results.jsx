@@ -1,21 +1,31 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
+import "/styles/results.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const ResultsSection = ({ results }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const resultsRef = useRef(null);
+
+  useEffect(() => {
+    if (results.length > 0) {
+      setIsVisible(true);
+
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [results]);
+
   return (
-    <section id="results_section" className="container mt-4">
-      <div id="results_container" className="container">
-        {results && results.length > 0 && (
-          <ul className="list-group">
-            {results.map((item, index) => (
-              <li key={index} className="list-group-item">
-                <strong>{item.docketTitle}</strong>  
-                <p>ID: {item.docketID} - Matching Comments: {item.matching_comments}/{item.doc_count}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </section>
+    <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
+      <h2 className="results-title">Search Results</h2>
+      {results.map((result, index) => (
+        <div key={index} className="result-item border p-3 mb-2 rounded">
+          <strong>{result.docketTitle}</strong>
+          <p><strong>Docket ID:</strong> {result.docketID}</p>
+          <p><strong>Matching Comments:</strong> {result.matching_comments}/{result.doc_count}</p>
+          <p><strong>Date:</strong> {result.modifyDate}</p>
+        </div>
+      ))}
+    </div>
   );
 };
 
