@@ -24,6 +24,7 @@ const ResultsSection = ({ results }) => {
           <p><strong>Docket ID:</strong> {docket.id}</p>
           <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
           <p><strong>Date Modified:</strong> {new Date(docket.dateModified).toLocaleDateString()}</p>
+          <p><strong>Agency Name:</strong> {docket.agencyName}</p>
         </div>
       ))}
       <PageSwitcher current_page={results.currentPage} total_pages={results.totalPages}/>
