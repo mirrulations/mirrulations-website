@@ -67,3 +67,8 @@
   bottom: 0;
   border-radius: 5px;
 }
+
+a.disabled {
+  pointer-events: none;
+  color: #ccc;
+}

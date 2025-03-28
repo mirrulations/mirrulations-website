@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path'; // Import the path module
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), 'VITE_');
@@ -23,7 +23,8 @@ export default defineConfig(({ mode }) => {
         define: {
             'import.meta.env': {
                 ...env,
-            }
-        }
+            },
+            global: {},
+        },
     };
 });
