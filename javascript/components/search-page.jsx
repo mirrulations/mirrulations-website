@@ -125,7 +125,7 @@ const SearchPage = () => {
         <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
       </p>
 
-      {loading && <p id="loading-section" className="text-center mt-3">Loading...</p>}
+      {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
 
       {results && <ResultsSection results={results} />}
