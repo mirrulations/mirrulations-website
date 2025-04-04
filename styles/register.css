@@ -1,0 +1,47 @@
+.register-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("/assets/Capitol_Building.jpg") no-repeat center center fixed;
+    background-size: cover; 
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.register h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#register_status {
+    font-size: 14px;
+}
+
+#login_link {
+    font-size: 16px;
+}
+
+.register {
+    max-width: 600px;
+    width: 100%;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 20px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 1.2rem; /* Adjust the size of the icon */
+    line-height: 14; /* Ensure proper alignment */
+}
