@@ -3,14 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import "/styles/results.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ResultsSection = ({ results }) => {
+const ResultsSection = ({ results, onPageChange }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
   useEffect(() => {
     if (results.dockets.length > 0) {
       setIsVisible(true);
-
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [results]);
@@ -23,7 +22,7 @@ const ResultsSection = ({ results }) => {
           <strong>{docket.title}</strong>
           <p><strong>Agency Name:</strong> {docket.agencyName}</p>
           <p>
-            <strong>Docket ID: </strong> 
+            <strong>Docket ID: </strong>
             <a href={`https://www.regulations.gov/docket/${docket.id}`} target="_blank" rel="noopener noreferrer">
               {docket.id}
             </a>
@@ -32,7 +31,9 @@ const ResultsSection = ({ results }) => {
           <p><strong>Date Modified:</strong> {new Date(docket.dateModified).toLocaleDateString()}</p>
         </div>
       ))}
-      <PageSwitcher current_page={results.currentPage} total_pages={results.totalPages}/>
+      <PageSwitcher
+        current_page={results.currentPage} total_pages={results.totalPages} onPageChange={onPageChange}
+      />
     </div>
   );
 };

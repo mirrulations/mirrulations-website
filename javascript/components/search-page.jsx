@@ -23,57 +23,53 @@ const SearchPage = () => {
     }
   }, [navigate]);
 
-  const handleSearch = async () => {
+  const fetchResults = async (pageNumber) => {
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       setResults(null);
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
-    try {
-      const query_params = new URLSearchParams()
-      query_params.append("searchTerm", searchTerm)
-      query_params.append("pageNumber", 0)
-      query_params.append("refreshResults", true)
-      query_params.append("sortParams", JSON.stringify(
-        {
-          "desc": true,
-          "sortType": "relevance"
-        }
-      ))
-      query_params.append("filterParams", JSON.stringify(
-        {
-          "dateRange": {
-              "start": "2000-01-01 00:00:00.000-0400",
-              "end": "2025-03-18 00:00:00.000-0400"
-          },
-          "docketType": "Rulemaking"
-        }
-      ))
 
-      const url = `${API_GATEWAY_URL}?${query_params.toString()}`
-      
+    try {
+      const query_params = new URLSearchParams();
+      query_params.append("searchTerm", searchTerm);
+      query_params.append("pageNumber", pageNumber);
+      query_params.append("refreshResults", true);
+      query_params.append("sortParams", JSON.stringify({
+        "desc": true,
+        "sortType": "relevance"
+      }));
+      query_params.append("filterParams", JSON.stringify({
+        "dateRange": {
+          "start": "2000-01-01 00:00:00.000-0400",
+          "end": "2025-03-18 00:00:00.000-0400"
+        },
+        "docketType": "Rulemaking"
+      }));
+
+      const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
+
       const headers = {
         "Session-Id": "test",
         "Content-Type": "application/json"
-      }
+      };
 
       const response = await fetch(url, { headers });
-  
+
       if (!response.ok) {
-        console.log(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       console.log(data);
-  
-      if (!data ||!data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
+
+      if (!data || !data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
         throw new Error("No results found. Please try a different search term.");
       }
-  
+
       setResults(data);
     } catch (err) {
       setError(err.message);
@@ -83,24 +79,33 @@ const SearchPage = () => {
     }
   };
 
+  const handleSearch = () => {
+    fetchResults(0);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    fetchResults(pageNumber);
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
+
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("idToken");
     setIsAuthenticated(false);
     navigate("/auth");
   };
-  
+
   return (
     <div className="search-container p-0">
-        <h1 className="logo">Mirrulations</h1>
-        <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
-          Logout
-        </button>
+      <h1 className="logo">Mirrulations</h1>
+      <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
+        Logout
+      </button>
       <section className="search-section">
         <div id="search" className="d-flex justify-content-center">
           <input
@@ -128,7 +133,7 @@ const SearchPage = () => {
       {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
 
-      {results && <ResultsSection results={results} />}
+      {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
     </div>
   );
 };
