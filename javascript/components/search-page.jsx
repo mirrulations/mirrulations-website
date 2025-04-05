@@ -84,6 +84,7 @@ const SearchPage = () => {
   };
 
   const handlePageChange = (pageNumber) => {
+    console.log(pageNumber)
     fetchResults(pageNumber);
   };
 
