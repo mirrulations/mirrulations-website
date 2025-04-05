@@ -1,56 +1,81 @@
 import React from "react";
 
-const PageSwitcher = ({ current_page, total_pages }) => {
-    const PageButtons = () => {
-        current_page += 1 // this is because human's expect pages to be 1-indexed
-        let middle_page = current_page
+const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
+  if (total_pages <= 1) {
+    return null; // No pagination needed if only one page
+  }
 
-        if (current_page >= total_pages) { middle_page = total_pages - 1 }
-        if (current_page <= 1) { middle_page = 2}
-        const page_numbers = [middle_page - 1, middle_page, middle_page+1]
+  const pageNumbers = [];
+  const maxPagesToShow = 3; // Show up to 3 pages around the current page
 
+  // Calculate start and end pages to display
+  let startPage = Math.max(0, current_page - 1);
+  let endPage = Math.min(total_pages - 1, current_page + 1);
 
-        const pageItemList =  page_numbers.map((number) => {
-            return (
-                <li className="page-item" key={number}>
-                    <a className={number === current_page ? "page-link disabled": "page-link"} href={"#"}>
-                        {number}
-                    </a>
-                </li> 
-            )
-        })
+  // Adjust for edge cases
+  if (current_page <= 0) {
+    endPage = Math.min(total_pages - 1, maxPagesToShow - 1);
+  } else if (current_page >= total_pages - 1) {
+    startPage = Math.max(0, total_pages - maxPagesToShow);
+  }
 
-        const arrowList = [
-            {text: "<<", href: "#", disabledPage: 1},
-            {text: "<", href: "#", disabledPage: 1}, 
-            {text: ">", href: "#", disabledPage: total_pages}, 
-            {text: ">>", href: "#", disabledPage: total_pages}, 
-        ]
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
-        const arrowItemList = arrowList.map((arrow) => {
-            return (
-                <li className="page-item" key={arrow.text}>
-                    <a className={arrow.disabledPage === current_page ? "page-link disabled": "page-link"} href={arrow.href}>
-                        {arrow.text}
-                    </a>
-                </li> 
-            )
-        })
-        
-        return [...arrowItemList.slice(0, 2), ...pageItemList, ...arrowItemList.slice(2)]
-    }
+  const arrowButtons = [
+    { text: "<<", page: 0, disabled: current_page === 0 },
+    { text: "<", page: current_page - 1, disabled: current_page === 0 },
+    { text: ">", page: current_page + 1, disabled: current_page === total_pages - 1 },
+    { text: ">>", page: total_pages - 1, disabled: current_page === total_pages - 1 },
+  ];
 
-    return (
-        <section id="page_switcher_section" className="container mt-4">
-            <div id="page_switcher_container" className="container">
-                <nav>
-                    <ul className="pagination justify-content-center">
-                        {PageButtons()}
-                    </ul>
-                </nav>
-            </div>
-        </section>
-    );
+  return (
+    <section id="page_switcher_section" className="container mt-4">
+      <div id="page_switcher_container" className="container">
+        <nav>
+          <ul className="pagination justify-content-center">
+            {/* Left arrow buttons */}
+            {arrowButtons.slice(0, 2).map((arrow) => (
+              <li className="page-item" key={arrow.text}>
+                <button
+                  className="page-link"
+                  onClick={() => onPageChange(arrow.page)}
+                  disabled={arrow.disabled}
+                >
+                  {arrow.text}
+                </button>
+              </li>
+            ))}
+            {/* Numbered page buttons */}
+            {pageNumbers.map((number) => (
+              <li className="page-item" key={number}>
+                <button
+                  className={number === current_page ? "page-link active" : "page-link"}
+                  onClick={() => onPageChange(number)}
+                  disabled={number === current_page}
+                >
+                  {number + 1}
+                </button>
+              </li>
+            ))}
+            {/* Right arrow buttons */}
+            {arrowButtons.slice(2).map((arrow) => (
+              <li className="page-item" key={arrow.text}>
+                <button
+                  className="page-link"
+                  onClick={() => onPageChange(arrow.page)}
+                  disabled={arrow.disabled}
+                >
+                  {arrow.text}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  );
 };
 
-export default PageSwitcher
+export default PageSwitcher;
