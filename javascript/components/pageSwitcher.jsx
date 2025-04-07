@@ -6,7 +6,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     }
   
     const pageNumbers = [];
-    const maxPagesToShow = 10;
+    const maxPagesToShow = total_pages < 10 ? total_pages : 10;
   
     let startPage = Math.max(0, current_page - 1);
     let endPage = Math.min(total_pages - 1, current_page + 1);
