@@ -29,10 +29,6 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     { text: ">>", page: maxPagesToShow - 1, disabled: current_page >= maxPagesToShow - 1 },
   ];
 
-  const handleClickDisable = () => {
-    // Disable the button on click
-    setIsDisabled(true);
-  };
 
 
   return (
@@ -60,7 +56,6 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
                 <button
                   className="page-link"
                   onClick={() => onPageChange(number)}
-                  onClickCapture={handleClickDisable}
                   disabled={number === current_page}
                 >
                   {number + 1}
