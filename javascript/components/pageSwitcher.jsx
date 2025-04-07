@@ -24,8 +24,8 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     const arrowButtons = [
         { text: "<<", page: 0, disabled: current_page === 0 },
         { text: "<", page: current_page - 1, disabled: current_page === 0 },
-        { text: ">", page: current_page + 1, disabled: current_page === total_pages - 1 },
-        { text: ">>", page: total_pages - 1, disabled: current_page === total_pages - 1 },
+        { text: ">", page: current_page + 1, disabled: current_page === maxPagesToShow - 1 },
+        { text: ">>", page: maxPagesToShow, disabled: current_page === maxPagesToShow - 1 },
       ];
     
     return (
