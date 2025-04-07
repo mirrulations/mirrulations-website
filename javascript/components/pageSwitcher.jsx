@@ -1,34 +1,35 @@
 import React from "react";
 
 const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
-    if (total_pages <= 1) {
-      return null;
-    }
-  
-    const pageNumbers = [];
-    const maxPagesToShow = total_pages < 10 ? total_pages : 10;
-  
-    let startPage = Math.max(0, current_page - 1);
-    let endPage = Math.min(total_pages - 1, current_page + 1);
-  
-    if (current_page <= 0) {
-      endPage = Math.min(total_pages - 1, maxPagesToShow - 1);
-    } else if (current_page >= total_pages - 1) {
-      startPage = Math.max(0, total_pages - maxPagesToShow);
-    }
-  
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(i);
-    }
+  if (total_pages <= 1) {
+    return null;
+  }
 
-    const arrowButtons = [
-        { text: "<<", page: 0, disabled: current_page === 0 },
-        { text: "<", page: current_page - 1, disabled: current_page === 0 },
-        { text: ">", page: current_page + 1, disabled: current_page === maxPagesToShow - 1 },
-        { text: ">>", page: maxPagesToShow, disabled: current_page === maxPagesToShow - 1 },
-      ];
-    
-    return (
+  const maxPagesToShow = total_pages < 10 ? total_pages : 10;
+  const pageNumbers = [];
+
+  // Calculate initial start and end pages
+  let startPage = Math.max(0, current_page - Math.floor((maxPagesToShow - 1) / 2));
+  let endPage = startPage + maxPagesToShow - 1;
+
+  // Adjust if we're at the end
+  if (endPage >= maxPagesToShow) {
+    endPage = maxPagesToShow - 1;
+    startPage = Math.max(0, endPage - (maxPagesToShow - 1));
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+  const arrowButtons = [
+    { text: "<<", page: 0, disabled: current_page === 0 },
+    { text: "<", page: current_page - 1, disabled: current_page === 0 },
+    { text: ">", page: current_page + 1, disabled: current_page >= maxPagesToShow - 1 },
+    { text: ">>", page: maxPagesToShow - 1, disabled: current_page >= maxPagesToShow - 1 },
+  ];
+
+  return (
     <section id="page_switcher_section" className="container mt-4">
       <div id="page_switcher_container" className="container">
         <nav>
