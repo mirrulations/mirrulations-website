@@ -4,7 +4,6 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   if (total_pages <= 1) {
     return null;
   }
-  const [isDisabled, setIsDisabled] = useState(false);
   const maxPagesToShow = total_pages < 10 ? total_pages : 10;
   const pageNumbers = [];
   
