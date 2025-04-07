@@ -29,7 +29,13 @@ const ResultsSection = ({ results }) => {
             </a>
           </p>
           <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
-          <p><strong>Date Modified:</strong> {new Date(docket.dateModified).toLocaleDateString()}</p>
+          <p>
+            <strong>Date Modified:</strong> {new Date(docket.timelineDates.dateModified).toLocaleDateString()}
+            <strong>&emsp;Date Created:</strong> { docket.timelineDates.dateCreated ? new Date(docket.timelineDates.dateCreated).toLocaleDateString() : "Unknown"}
+            <strong>&emsp;Date Effective:</strong> { docket.timelineDates.dateEffective ? new Date(docket.timelineDates.dateEffective).toLocaleDateString() : "Unknown" }
+            <strong>&emsp;Date Closed:</strong> { docket.timelineDates.dateClosed ? new Date(docket.timelineDates.dateClosed).toLocaleDateString() : "Unknown" }
+            <strong>&emsp;Date Comments Opened:</strong> { docket.timelineDates.dateCommentsOpened ? new Date(docket.timelineDates.dateCommentsOpened).toLocaleDateString() : "Unknown" }
+          </p>
         </div>
       ))}
       <PageSwitcher current_page={results.currentPage} total_pages={results.totalPages}/>
