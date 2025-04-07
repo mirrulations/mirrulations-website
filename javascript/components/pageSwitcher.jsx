@@ -1,10 +1,12 @@
+import React from "react";
+
 const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     if (total_pages <= 1) {
       return null; 
     }
   
     const pageNumbers = [];
-    const maxPagesToShow = 3;
+    const maxPagesToShow = 10;
   
     let startPage = Math.max(0, current_page - 1);
     let endPage = Math.min(total_pages - 1, current_page + 1);
