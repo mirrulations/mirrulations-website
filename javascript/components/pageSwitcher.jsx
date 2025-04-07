@@ -4,10 +4,10 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   if (total_pages <= 1) {
     return null;
   }
-
+  const [isDisabled, setIsDisabled] = useState(false);
   const maxPagesToShow = total_pages < 10 ? total_pages : 10;
   const pageNumbers = [];
-
+  
   // Calculate initial start and end pages
   let startPage = Math.max(0, current_page - Math.floor((maxPagesToShow - 1) / 2));
   let endPage = startPage + maxPagesToShow - 1;
@@ -28,6 +28,12 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     { text: ">", page: current_page + 1, disabled: current_page >= maxPagesToShow - 1 },
     { text: ">>", page: maxPagesToShow - 1, disabled: current_page >= maxPagesToShow - 1 },
   ];
+
+  const handleClickDisable = () => {
+    // Disable the button on click
+    setIsDisabled(true);
+  };
+
 
   return (
     <section id="page_switcher_section" className="container mt-4">
@@ -54,6 +60,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
                 <button
                   className="page-link"
                   onClick={() => onPageChange(number)}
+                  onClickCapture={handleClickDisable}
                   disabled={number === current_page}
                 >
                   {number + 1}
