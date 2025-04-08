@@ -29,7 +29,7 @@ const SearchPage = () => {
     const page = searchParams.get("page");
     
     if (q) {
-      fetchResults(q, parseInt(page) || 0);
+      fetchResults(q, parseInt(page - 1) || 0);
     }
   }, [searchParams]);
 
