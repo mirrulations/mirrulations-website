@@ -126,7 +126,7 @@ const SearchPage = () => {
         Logout
       </button>
       <section className="search-section">
-        <form onSubmit={handleSearch} className="d-flex justify-content-center">
+        <form onSubmit={handleSearch} id="search" className="d-flex justify-content-center">
           <input
             type="text"
             className="search-input form-control w-50"
