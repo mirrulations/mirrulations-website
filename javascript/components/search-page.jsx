@@ -92,6 +92,9 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
+    // Clear previous errors and results before new search
+    setError(null);
+    setResults(null);
     setSearchParams({ q: searchTerm, page: 0 });
   };
 
@@ -131,8 +134,9 @@ const SearchPage = () => {
           <button
             onClick={handleSearch}
             className="search-button btn btn-primary ms-2"
+            disabled={loading} // Disable button while loading
           >
-            Search
+            {loading ? "Searching..." : "Search"}
           </button>
         </div>
       </section>
@@ -143,7 +147,18 @@ const SearchPage = () => {
       </p>
 
       {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
-      {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
+      {error && (
+        <p id="error-loader" className="text-center mt-3">
+          {error}
+          <button 
+            className="btn btn-link p-0 ms-2" 
+            onClick={handleSearch}
+            disabled={loading}
+          >
+            Try again
+          </button>
+        </p>
+      )}
 
       {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
     </div>
