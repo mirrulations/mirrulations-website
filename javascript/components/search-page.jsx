@@ -42,6 +42,7 @@ const SearchPage = () => {
 
     setLoading(true);
     setError(null);
+    setResults(null); // Clear previous results when starting new search
 
     try {
       const query_params = new URLSearchParams();
@@ -91,10 +92,13 @@ const SearchPage = () => {
     }
   };
 
-  const handleSearch = () => {
-    // Clear previous errors and results before new search
+  const handleSearch = (e) => {
+    if (e) e.preventDefault(); // Prevent default form behavior
+    if (!searchTerm.trim()) {
+      setError("Please enter a search term.");
+      return;
+    }
     setError(null);
-    setResults(null);
     setSearchParams({ q: searchTerm, page: 0 });
   };
 
@@ -104,7 +108,7 @@ const SearchPage = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch(e);
     }
   };
 
@@ -122,7 +126,7 @@ const SearchPage = () => {
         Logout
       </button>
       <section className="search-section">
-        <div id="search" className="d-flex justify-content-center">
+        <form onSubmit={handleSearch} className="d-flex justify-content-center">
           <input
             type="text"
             className="search-input form-control w-50"
@@ -132,13 +136,13 @@ const SearchPage = () => {
             onKeyDown={handleKeyPress}
           />
           <button
-            onClick={handleSearch}
+            type="submit"
             className="search-button btn btn-primary ms-2"
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
             {loading ? "Searching..." : "Search"}
           </button>
-        </div>
+        </form>
       </section>
       <p className="footer">
         <a href="https://www.flickr.com/photos/wallyg/3664385777">Washington DC - Capitol Hill: United States Capitol</a>
@@ -148,16 +152,16 @@ const SearchPage = () => {
 
       {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
       {error && (
-        <p id="error-loader" className="text-center mt-3">
-          {error}
+        <div id="error-loader" className="text-center mt-3">
+          <p>{error}</p>
           <button 
-            className="btn btn-link p-0 ms-2" 
-            onClick={handleSearch}
+            className="btn btn-primary"
+            onClick={() => handleSearch()}
             disabled={loading}
           >
-            Try again
+            Try Again
           </button>
-        </p>
+        </div>
       )}
 
       {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
