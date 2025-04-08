@@ -8,14 +8,16 @@ const API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL || GATEWAY_API_URL;
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
-  const [pageNumber, setPageNumber] = useState(parseInt(searchParams.get("page")) || 0);
+  const urlSearchTerm = searchParams.get("q") || "";
+  const urlPage = parseInt(searchParams.get("page")) || 0;
+  
+  const [searchTerm, setSearchTerm] = useState(urlSearchTerm);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
+  // Check authentication
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     if (!isAuthenticated) {
@@ -23,18 +25,15 @@ const SearchPage = () => {
     }
   }, [navigate]);
 
-  // Fetch results when search params change
+  // Fetch results when URL params change
   useEffect(() => {
-    const q = searchParams.get("q");
-    const page = searchParams.get("page");
-    
-    if (q) {
-      fetchResults(q, parseInt(page) || 0);
+    if (urlSearchTerm) {
+      fetchResults(urlSearchTerm, urlPage);
     }
-  }, [searchParams]);
+  }, [urlSearchTerm, urlPage]);
 
   const fetchResults = async (term, pageNum = 0) => {
-    if (!term?.trim()) {
+    if (!term.trim()) {
       setError("Please enter a search term.");
       setResults(null);
       return;
@@ -74,15 +73,12 @@ const SearchPage = () => {
       }
 
       const data = await response.json();
-      console.log(data);
 
-      if (!data || !data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
+      if (!data?.dockets?.length) {
         throw new Error("No results found. Please try a different search term.");
       }
 
       setResults(data);
-      setSearchTerm(term);
-      setPageNumber(pageNum);
     } catch (err) {
       setError(err.message);
       setResults(null);
@@ -92,7 +88,13 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
-    setSearchParams({ q: searchTerm, page: 0 });
+    // Only update params if search term has changed
+    if (searchTerm !== urlSearchTerm) {
+      setSearchParams({ q: searchTerm, page: 0 });
+    } else {
+      // If same term, just refresh the results
+      fetchResults(searchTerm, 0);
+    }
   };
 
   const handlePageChange = (newPageNumber) => {
@@ -108,7 +110,6 @@ const SearchPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("idToken");
-    setIsAuthenticated(false);
     navigate("/auth");
   };
 
@@ -131,8 +132,9 @@ const SearchPage = () => {
           <button
             onClick={handleSearch}
             className="search-button btn btn-primary ms-2"
+            disabled={loading}
           >
-            Search
+            {loading ? "Searching..." : "Search"}
           </button>
         </div>
       </section>
