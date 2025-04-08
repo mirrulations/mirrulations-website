@@ -154,13 +154,6 @@ const SearchPage = () => {
       {error && (
         <div id="error-loader" className="text-center mt-3">
           <p>{error}</p>
-          <button 
-            className="btn btn-primary"
-            onClick={() => handleSearch()}
-            disabled={loading}
-          >
-            Try Again
-          </button>
         </div>
       )}
 
