@@ -96,9 +96,7 @@ const SearchPage = () => {
   };
 
   const handlePageChange = (newPageNumber) => {
-    setLoading(true);
     setSearchParams({ q: searchTerm, page: newPageNumber });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleKeyPress = (e) => {
@@ -146,13 +144,8 @@ const SearchPage = () => {
 
       {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-    {results && (
-      <ResultsSection 
-        results={results} 
-        onPageChange={handlePageChange}
-        loading={loading}
-      />
-    )}
+
+      {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
     </div>
   );
 };

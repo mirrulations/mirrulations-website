@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "/styles/results.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ResultsSection = ({ results, onPageChange, loading }) => {
+const ResultsSection = ({ results, onPageChange }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
@@ -17,8 +17,7 @@ const ResultsSection = ({ results, onPageChange, loading }) => {
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
       <h2 className="results-title">Search Results</h2>
-      {loading && <p className="text-center mt-3">Loading results...</p>}
-      {!loading && results.dockets.map((docket, index) => (
+      {results.dockets.map((docket, index) => (
         <div key={index} className="result-item border p-3 mb-2 rounded">
           <strong>{docket.title}</strong>
           <p><strong>Agency Name:</strong> {docket.agencyName}</p>
@@ -34,9 +33,7 @@ const ResultsSection = ({ results, onPageChange, loading }) => {
         </div>
       ))}
       <PageSwitcher
-        current_page={results.currentPage} 
-        total_pages={results.totalPages} 
-        onPageChange={onPageChange}
+        current_page={results.currentPage} total_pages={results.totalPages} onPageChange={onPageChange}
       />
     </div>
   );
