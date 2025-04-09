@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "/styles/register.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // Cognito user pool data
 const poolData = {
@@ -25,12 +25,29 @@ const Register = () => {
 
     const userPool = new CognitoUserPool(poolData);
 
+    // Password validation checks
+    const passwordChecks = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        specialChar: /[@$!%*?&]/.test(password),
+    };
+
+    const isPasswordValid = Object.values(passwordChecks).every((check) => check);
+
     const registerUser = (event) => {
         event.preventDefault();
 
         // Basic validation
         if (!username || !email || !password) {
             setStatusMessage("Please fill out all fields.");
+            return;
+        }
+
+        // Validate password
+        if (!isPasswordValid) {
+            setStatusMessage("Please ensure your password meets all the requirements.");
             return;
         }
 
@@ -140,14 +157,42 @@ const Register = () => {
                         <span
                             className="password-toggle"
                             onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                right: "10px",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                                color: "#6c757d",
+                            }}
                         >
                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} /> {/* Use Font Awesome icons */}
                         </span>
                     </div>
 
-                    <small className="text-muted">
-                        Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.
-                    </small>
+                    {/* Password Requirements */}
+                    <ul className="password-requirements mt-3">
+                        <li>
+                            <FontAwesomeIcon icon={passwordChecks.length ? faCheck : faTimes} className={passwordChecks.length ? "text-success" : "text-danger"} />
+                            At least 8 characters
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={passwordChecks.uppercase ? faCheck : faTimes} className={passwordChecks.uppercase ? "text-success" : "text-danger"} />
+                            At least one uppercase letter
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={passwordChecks.lowercase ? faCheck : faTimes} className={passwordChecks.lowercase ? "text-success" : "text-danger"} />
+                            At least one lowercase letter
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={passwordChecks.number ? faCheck : faTimes} className={passwordChecks.number ? "text-success" : "text-danger"} />
+                            At least one number
+                        </li>
+                        <li>
+                            <FontAwesomeIcon icon={passwordChecks.specialChar ? faCheck : faTimes} className={passwordChecks.specialChar ? "text-success" : "text-danger"} />
+                            At least one special character (@, $, !, %, *, ?, &)
+                        </li>
+                    </ul>
 
                     {/* Submit Button */}
                     <button
@@ -210,12 +255,13 @@ const Register = () => {
 
             {/* Status Message */}
             {statusMessage && (
-                <p
+                <div
                     id="register_status"
-                    className={`mt-3 text-center ${statusMessage.includes("successful") ? "text-success" : "text-danger"}`}
+                    className={`alert mt-3 text-center ${statusMessage.includes("successful") ? "alert-success" : "alert-danger"}`}
+                    role="alert"
                 >
                     {statusMessage}
-                </p>
+                </div>
             )}
 
             {/* Footer Attribution */}
