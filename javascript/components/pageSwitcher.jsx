@@ -47,13 +47,13 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
 
             {pageNumbers.map((number) => (
               <li
-                className={`page-item ${number === currentPageZeroBased ? "active" : ""}`}
+                className={`page-item ${number === current_page ? "active" : ""}`}
                 key={number}
               >
                 <button
                   className="page-link"
                   onClick={() => onPageChange(number + 1)} // Convert back to 1-based
-                  disabled={number === currentPageZeroBased}
+                  disabled={number === current_page}
                 >
                   {number + 1} {/* Display as 1-based */}
                 </button>
