@@ -29,11 +29,11 @@ const SearchPage = () => {
     const page = searchParams.get("page");
     
     if (q) {
-      fetchResults(q, parseInt(page) || 0);
+      handleResults(q, parseInt(page) || 0);
     }
   }, [searchParams]);
 
-  const fetchResults = async (term, pageNum = 0) => {
+  const handleResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
       setError("Please enter a search term.");
       setResults(null);
@@ -89,12 +89,6 @@ const SearchPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSearch = () => {
-    setError(null); // Clear any previous error
-    setSearchParams({ q: searchTerm.trim(), page: 0 });
-    setSearchTerm(searchTerm.trim()); // Ensure searchTerm is updated
   };
 
   const handlePageChange = (newPageNumber) => {
