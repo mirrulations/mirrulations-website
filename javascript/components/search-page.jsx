@@ -9,12 +9,13 @@ const API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL || GATEWAY_API_URL;
 console.log("API_GATEWAY_URL:", API_GATEWAY_URL);
 
 const SearchPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
+  const [pageNumber, setPageNumber] = useState(parseInt(searchParams.get("page")) || 0);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
@@ -22,6 +23,23 @@ const SearchPage = () => {
       navigate("/auth");
     }
   }, [navigate]);
+    // Fetch results when search params change
+    useEffect(() => {
+      const q = searchParams.get("q");
+      const page = searchParams.get("page");
+      
+      if (q) {
+        setSearchTerm(q); // Keep search term in sync with URL
+        setPageNumber(parseInt(page) || 0);
+        fetchResults(q, parseInt(page) || 0);
+      } else {
+        // Only clear results if we have a q parameter change, not on initial load
+        if (searchParams.toString() !== "") {
+          setResults(null);
+          setError(null);
+        }
+      }
+    }, [searchParams]);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -88,6 +106,11 @@ const SearchPage = () => {
       handleSearch();
     }
   };
+
+  const handlePageChange = (newPageNumber) => {
+    setSearchParams({ q: searchTerm, page: newPageNumber });
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("idToken");
@@ -145,7 +168,7 @@ const SearchPage = () => {
 
       {loading && <LoadingMessage />}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-      {results && <ResultsSection results={results} />}
+      {results && <ResultsSection results={results} onPageChange={handlePageChange}/>}
     </div>
   );
 };
