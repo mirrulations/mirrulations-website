@@ -13,7 +13,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
 
   // Adjust if we're at the end
   if (endPage >= total_pages) {
-    endPage = total_pages - 1;
+    endPage = maxPagesToShow - 1;
     startPage = Math.max(0, endPage - (maxPagesToShow - 1));
   }
 
