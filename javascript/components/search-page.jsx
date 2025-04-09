@@ -18,6 +18,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(isAuthenticated);
     if (!isAuthenticated) {
       navigate("/auth");
     }
@@ -29,7 +30,13 @@ const SearchPage = () => {
     const page = searchParams.get("page");
     
     if (q) {
+      setSearchTerm(q); // Keep search term in sync with URL
+      setPageNumber(parseInt(page) || 0);
       fetchResults(q, parseInt(page) || 0);
+    } else {
+      // Clear results if no search term in URL
+      setResults(null);
+      setError(null);
     }
   }, [searchParams]);
 
@@ -82,8 +89,6 @@ const SearchPage = () => {
       }
 
       setResults(data);
-      setSearchTerm(term);
-      setPageNumber(pageNum);
     } catch (err) {
       setError(err.message);
       setResults(null);
@@ -93,13 +98,14 @@ const SearchPage = () => {
   };
 
   const handleSearch = (e) => {
-    if (e) e.preventDefault(); // Prevent default form behavior
+    if (e) e.preventDefault();
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       return;
     }
     setError(null);
     setSearchParams({ q: searchTerm, page: 0 });
+    // No need to call fetchResults here as the useEffect will handle it
   };
 
   const handlePageChange = (newPageNumber) => {
