@@ -34,9 +34,11 @@ const SearchPage = () => {
       setPageNumber(parseInt(page) || 0);
       fetchResults(q, parseInt(page) || 0);
     } else {
-      // Clear results if no search term in URL
-      setResults(null);
-      setError(null);
+      // Only clear results if we have a q parameter change, not on initial load
+      if (searchParams.toString() !== "") {
+        setResults(null);
+        setError(null);
+      }
     }
   }, [searchParams]);
 
@@ -49,7 +51,6 @@ const SearchPage = () => {
 
     setLoading(true);
     setError(null);
-    setResults(null); // Clear previous results when starting new search
 
     try {
       const query_params = new URLSearchParams();
@@ -91,13 +92,14 @@ const SearchPage = () => {
       setResults(data);
     } catch (err) {
       setError(err.message);
-      setResults(null);
+      // Don't clear results here - keep previous results visible
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       setResults(null);
@@ -105,7 +107,6 @@ const SearchPage = () => {
     }
     setError(null);
     setSearchParams({ q: searchTerm, page: 0 });
-    // No need to call fetchResults here as the useEffect will handle it
   };
 
   const handlePageChange = (newPageNumber) => {
