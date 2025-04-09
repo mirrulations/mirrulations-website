@@ -94,10 +94,9 @@ const SearchPage = () => {
   const handleSearch = () => {
     setError(null); // Clear any previous error
     const term = searchTerm.trim();
-    const page = parseInt(searchParams.get("page")) || 0;
     if (term) {
-      setSearchParams({ q: term, page: page});
-      fetchResults(term, page); // <- Force fetch
+      setSearchParams({ q: term, page: 0 });
+      fetchResults(term, 0); // <- Force fetch
     } else {
       setError("Please enter a search term.");
     }
@@ -170,7 +169,7 @@ const SearchPage = () => {
 
       {loading && <LoadingMessage />}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-      {results && <ResultsSection results={results} />}
+      {results && <ResultsSection results={results} onPageChange={handlePageChange}/>}
     </div>
   );
 };
