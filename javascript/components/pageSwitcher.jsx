@@ -8,7 +8,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   const pageNumbers = [];
     
   // Calculate initial start and end pages (0-based)
-  let startPage = Math.max(0, currentPageZeroBased - Math.floor((maxPagesToShow - 1) / 2));
+  let startPage = Math.max(0, current_page - Math.floor((maxPagesToShow - 1) / 2));
   let endPage = startPage + maxPagesToShow - 1;
 
   // Adjust if we're at the end
