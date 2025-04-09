@@ -92,13 +92,9 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
-    const trimmedSearchTerm = searchTerm.trim();
-    if (!trimmedSearchTerm) {
-      setError("Please enter a valid search term.");
-      return;
-    }
     setError(null); // Clear any previous error
-    setSearchParams({ q: trimmedSearchTerm, page: 0 });
+    setSearchParams({ q: searchTerm.trim(), page: 0 });
+    setSearchTerm(searchTerm.trim()); // Ensure searchTerm is updated
   };
 
   const handlePageChange = (newPageNumber) => {
