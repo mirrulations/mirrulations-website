@@ -14,12 +14,10 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-    setIsAuthenticated(isAuthenticated);
     if (!isAuthenticated) {
       navigate("/auth");
     }
@@ -31,15 +29,7 @@ const SearchPage = () => {
     const page = searchParams.get("page");
     
     if (q) {
-      setSearchTerm(q); // Keep search term in sync with URL
-      setPageNumber(parseInt(page) || 0);
       fetchResults(q, parseInt(page) || 0);
-    } else {
-      // Only clear results if we have a q parameter change, not on initial load
-      if (searchParams.toString() !== "") {
-        setResults(null);
-        setError(null);
-      }
     }
   }, [searchParams]);
 
@@ -91,21 +81,20 @@ const SearchPage = () => {
       }
 
       setResults(data);
+      setSearchTerm(term);
+      setPageNumber(pageNum);
     } catch (err) {
       setError(err.message);
-      // Don't clear results here - keep previous results visible
+      setResults(null);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      setError("Please enter a search term.");
-      setResults(null);
-      return;
-    }
+    // Clear previous errors and results before new search
     setError(null);
+    setResults(null);
     setSearchParams({ q: searchTerm, page: 0 });
   };
 
@@ -133,7 +122,7 @@ const SearchPage = () => {
         Logout
       </button>
       <section className="search-section">
-        <form onSubmit={handleSearch} id="search" className="d-flex justify-content-center">
+        <div id="search" className="d-flex justify-content-center">
           <input
             type="text"
             className="search-input form-control w-50"
@@ -143,13 +132,13 @@ const SearchPage = () => {
             onKeyDown={handleKeyPress}
           />
           <button
-            type="submit"
+            onClick={handleSearch}
             className="search-button btn btn-primary ms-2"
-            disabled={loading}
+            disabled={loading} // Disable button while loading
           >
             {loading ? "Searching..." : "Search"}
           </button>
-        </form>
+        </div>
       </section>
       <p className="footer">
         <a href="https://www.flickr.com/photos/wallyg/3664385777">Washington DC - Capitol Hill: United States Capitol</a>
@@ -158,7 +147,19 @@ const SearchPage = () => {
       </p>
 
       {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
-      {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
+      {error && (
+        <p id="error-loader" className="text-center mt-3">
+          {error}
+          <button 
+            className="btn btn-link p-0 ms-2" 
+            onClick={handleSearch}
+            disabled={loading}
+          >
+            Try again
+          </button>
+        </p>
+      )}
+
       {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
     </div>
   );
