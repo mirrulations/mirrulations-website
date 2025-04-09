@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "/styles/styles.css";
 import ResultsSection from "./results";
 
 const API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL || GATEWAY_API_URL;
-
-console.log("API_GATEWAY_URL:", API_GATEWAY_URL);
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,98 +15,108 @@ const SearchPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(isAuthenticated);
     if (!isAuthenticated) {
       navigate("/auth");
     }
   }, [navigate]);
-    // Fetch results when search params change
-    useEffect(() => {
-      const q = searchParams.get("q");
-      const page = searchParams.get("page");
-      
-      if (q) {
-        setSearchTerm(q); // Keep search term in sync with URL
-        setPageNumber(parseInt(page) || 0);
-        fetchResults(q, parseInt(page) || 0);
-      } else {
-        // Only clear results if we have a q parameter change, not on initial load
-        if (searchParams.toString() !== "") {
-          setResults(null);
-          setError(null);
-        }
-      }
-    }, [searchParams]);
 
-  const handleSearch = async () => {
+  // Fetch results when search params change
+  useEffect(() => {
+    const q = searchParams.get("q");
+    const page = searchParams.get("page");
+    
+    if (q) {
+      setSearchTerm(q); // Keep search term in sync with URL
+      setPageNumber(parseInt(page) || 0);
+      fetchResults(q, parseInt(page) || 0);
+    } else {
+      // Only clear results if we have a q parameter change, not on initial load
+      if (searchParams.toString() !== "") {
+        setResults(null);
+        setError(null);
+      }
+    }
+  }, [searchParams]);
+
+  const fetchResults = async (term, pageNum = 0) => {
+    if (!term?.trim()) {
+      setError("Please enter a search term.");
+      setResults(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const query_params = new URLSearchParams();
+      query_params.append("searchTerm", term);
+      query_params.append("pageNumber", pageNum);
+      query_params.append("refreshResults", true);
+      query_params.append("sortParams", JSON.stringify({
+        "desc": true,
+        "sortType": "relevance"
+      }));
+      query_params.append("filterParams", JSON.stringify({
+        "dateRange": {
+          "start": "2000-01-01 00:00:00.000-0400",
+          "end": "2025-03-18 00:00:00.000-0400"
+        },
+        "docketType": "Rulemaking"
+      }));
+
+      const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
+
+      const headers = {
+        "Session-Id": "test",
+        "Content-Type": "application/json"
+      };
+
+      const response = await fetch(url, { headers });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!data || !data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
+        throw new Error("No results found. Please try a different search term.");
+      }
+
+      setResults(data);
+    } catch (err) {
+      setError(err.message);
+      // Don't clear results here - keep previous results visible
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       setResults(null);
       return;
     }
-  
-    setLoading(true);
     setError(null);
-  
-    try {
-      const query_params = new URLSearchParams()
-      query_params.append("searchTerm", searchTerm)
-      query_params.append("pageNumber", 0)
-      query_params.append("refreshResults", true)
-      query_params.append("sortParams", JSON.stringify(
-        {
-          "desc": true,
-          "sortType": "relevance"
-        }
-      ))
-      query_params.append("filterParams", JSON.stringify(
-        {
-          "dateRange": {
-              "start": "2000-01-01 00:00:00.000-0400",
-              "end": "2025-03-18 00:00:00.000-0400"
-          },
-          "docketType": "Rulemaking"
-        }
-      ))
+    setSearchParams({ q: searchTerm, page: 0 });
+  };
 
-      const url = `${API_GATEWAY_URL}?${query_params.toString()}`
-      
-      const headers = {
-        "Session-Id": "test",
-        "Content-Type": "application/json"
-      }
-
-      const response = await fetch(url, { headers });
-  
-      if (!response.ok) {
-        console.log(`HTTP error! Status: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log(data);
-  
-      if (!data ||!data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
-        throw new Error("No results found. Please try a different search term.");
-      }
-  
-      setResults(data);
-    } catch (err) {
-      setError(err.message);
-      setResults(null);
-    } finally {
-      setLoading(false);
-    }
+  const handlePageChange = (newPageNumber) => {
+    setSearchParams({ q: searchTerm, page: newPageNumber });
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
-
-  const handlePageChange = (newPageNumber) => {
-    setSearchParams({ q: searchTerm, page: newPageNumber });
   };
 
   const handleLogout = () => {
@@ -118,32 +126,14 @@ const SearchPage = () => {
     navigate("/auth");
   };
 
-  const LoadingMessage = () => {
-    const [dots, setDots] = useState("");
-  
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setDots(prev => (prev.length < 3 ? prev + "." : ""));
-      }, 500);
-      return () => clearInterval(interval);
-    }, []);
-  
-    return (
-      <p id="loading-section" className="text-center mt-3">
-        Loading{dots} (this is harder than it looks!)
-      </p>
-    );
-  };
-  
-  
   return (
     <div className="search-container p-0">
-        <h1 className="logo">Mirrulations</h1>
-        <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
-          Logout
-        </button>
+      <h1 className="logo">Mirrulations</h1>
+      <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
+        Logout
+      </button>
       <section className="search-section">
-        <div id="search" className="d-flex justify-content-center">
+        <form onSubmit={handleSearch} id="search" className="d-flex justify-content-center">
           <input
             type="text"
             className="search-input form-control w-50"
@@ -153,12 +143,13 @@ const SearchPage = () => {
             onKeyDown={handleKeyPress}
           />
           <button
-            onClick={handleSearch}
+            type="submit"
             className="search-button btn btn-primary ms-2"
+            disabled={loading}
           >
-            Search
+            {loading ? "Searching..." : "Search"}
           </button>
-        </div>
+        </form>
       </section>
       <p className="footer">
         <a href="https://www.flickr.com/photos/wallyg/3664385777">Washington DC - Capitol Hill: United States Capitol</a>
@@ -166,9 +157,9 @@ const SearchPage = () => {
         <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
       </p>
 
-      {loading && <LoadingMessage />}
+      {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!) </p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-      {results && <ResultsSection results={results} onPageChange={handlePageChange}/>}
+      {results && <ResultsSection results={results} onPageChange={handlePageChange} />}
     </div>
   );
 };
