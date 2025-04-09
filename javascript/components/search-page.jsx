@@ -97,8 +97,7 @@ const SearchPage = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    if (e) e.preventDefault();
+  const handleSearch = () => {
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       setResults(null);
