@@ -94,9 +94,10 @@ const SearchPage = () => {
   const handleSearch = () => {
     setError(null); // Clear any previous error
     const term = searchTerm.trim();
+    const page = parseInt(searchParams.get("page")) || 0;
     if (term) {
-      setSearchParams({ q: term, page: 0 });
-      fetchResults(term, 0); // <- Force fetch
+      setSearchParams({ q: term, page: page});
+      fetchResults(term, page); // <- Force fetch
     } else {
       setError("Please enter a search term.");
     }
