@@ -95,22 +95,22 @@ const SearchPage = () => {
     navigate("/auth");
   };
 
-  const LoadingMessage = () => {
-    const [dots, setDots] = useState("");
+  // const LoadingMessage = () => {
+  //   const [dots, setDots] = useState("");
   
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setDots(prev => (prev.length < 3 ? prev + "." : ""));
-      }, 500);
-      return () => clearInterval(interval);
-    }, []);
+  //   useEffect(() => {
+  //     const interval = setInterval(() => {
+  //       setDots(prev => (prev.length < 3 ? prev + "." : ""));
+  //     }, 500);
+  //     return () => clearInterval(interval);
+  //   }, []);
   
-    return (
-      <p id="loading-section" className="text-center mt-3">
-        Loading{dots} (this is harder than it looks!)
-      </p>
-    );
-  };
+  //   return (
+  //     <p id="loading-section" className="text-center mt-3">
+  //       Loading{dots} (this is harder than it looks!)
+  //     </p>
+  //   );
+  // };
   
   
   return (
@@ -143,7 +143,8 @@ const SearchPage = () => {
         <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
       </p>
 
-      {loading && <LoadingMessage />}
+      {/* {loading && <LoadingMessage />} */}
+      {loading && <p id="loading-section" className="text-center mt-3">Loading... (this is harder than it looks!)</p>}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
       {results && <ResultsSection results={results} />}
     </div>
