@@ -29,17 +29,17 @@ const SearchPage = () => {
     const page = searchParams.get("page");
     
     if (q) {
-      handleResults(q, parseInt(page) || 0);
+      fetchResults(q, parseInt(page) || 0);
     }
   }, [searchParams]);
 
-  const handleResults = async (term, pageNum = 0) => {
+  const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
       setError("Please enter a search term.");
       setResults(null);
       return;
     }
-    setSearchParams({ q: searchTerm, page: 0 });
+
     setLoading(true);
     setError(null);
 
@@ -91,10 +91,21 @@ const SearchPage = () => {
     }
   };
 
+  const handleSearch = () => {
+    setError(null); // Clear any previous error
+    const term = searchTerm.trim();
+    if (term) {
+      setSearchParams({ q: term, page: 0 });
+      fetchResults(term, 0); // <- Force fetch
+    } else {
+      setError("Please enter a search term.");
+    }
+  };
   const handlePageChange = (newPageNumber) => {
     setSearchParams({ q: searchTerm, page: newPageNumber });
+    fetchResults(searchTerm, newPageNumber); // <- Force fetch
   };
-
+  
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
