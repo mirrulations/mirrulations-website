@@ -39,7 +39,7 @@ const SearchPage = () => {
       setResults(null);
       return;
     }
-
+    setSearchParams({ q: searchTerm, page: 0 });
     setLoading(true);
     setError(null);
 
