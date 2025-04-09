@@ -92,7 +92,8 @@ const SearchPage = () => {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    if (e) e.preventDefault(); // Prevent default form behavior
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       return;
@@ -153,6 +154,13 @@ const SearchPage = () => {
       {error && (
         <div id="error-loader" className="text-center mt-3">
           <p>{error}</p>
+          <button 
+            className="btn btn-primary"
+            onClick={() => handleSearch()}
+            disabled={loading}
+          >
+            Try Again
+          </button>
         </div>
       )}
 
