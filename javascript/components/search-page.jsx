@@ -92,6 +92,7 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
+    setError(null); // Clear any previous error
     setSearchParams({ q: searchTerm, page: 0 });
   };
 
