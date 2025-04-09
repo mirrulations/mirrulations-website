@@ -9,7 +9,7 @@ const API_GATEWAY_URL = import.meta.env.VITE_GATEWAY_API_URL || GATEWAY_API_URL;
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
-  const [pageNumber, setPageNumber] = useState(parseInt(searchParams.get("page")) || 0);
+  const [pageNumber, setPageNumber] = useState(parseInt(searchParams.get("page")) || 1);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,12 +26,12 @@ const SearchPage = () => {
   // Fetch results when search params change
   useEffect(() => {
     const q = searchParams.get("q");
-    const page = searchParams.get("page");
+    const page = parseInt(searchParams.get("page")) || 1;
     
     if (q) {
-      fetchResults(q, parseInt(page) || 0);
+      fetchResults(q, page - 1); // Convert to 0-based for API
     }
-  }, [searchParams]);
+}, [searchParams]);
 
   const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
@@ -92,19 +92,19 @@ const SearchPage = () => {
   };
 
   const handleSearch = () => {
-    setError(null); // Clear any previous error
+    setError(null);
     const term = searchTerm.trim();
     if (term) {
-      setSearchParams({ q: term, page: 0 });
-      fetchResults(term, 0); // <- Force fetch
+      setSearchParams({ q: term, page: 1 });
+      fetchResults(term, 0); // 0-based for API
     } else {
       setError("Please enter a search term.");
     }
-  };
+    };
   const handlePageChange = (newPageNumber) => {
-    setSearchParams({ q: searchTerm, page: newPageNumber });
-    fetchResults(searchTerm, newPageNumber); // <- Force fetch
-  };
+    setSearchParams({ q: searchTerm, page: newPageNumber + 1 }); // 1-based for URL
+    fetchResults(searchTerm, newPageNumber); // 0-based for API
+    };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
