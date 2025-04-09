@@ -99,8 +99,7 @@ const SearchPage = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+  const handleSearch = () => {
     if (!searchTerm.trim()) {
       setError("Please enter a search term.");
       setResults(null);
