@@ -154,13 +154,23 @@ const SearchPage = () => {
       {error && (
         <div id="error-loader" className="text-center mt-3">
           <p>{error}</p>
-          <button 
-            className="btn btn-primary"
-            onClick={() => handleSearch()}
+          <form onSubmit={handleSearch} id="search" className="d-flex justify-content-center">
+          <input
+            type="text"
+            className="search-input form-control w-50"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Enter search term"
+            onKeyDown={handleKeyPress}
+          />
+          <button
+            type="submit"
+            className="search-button btn btn-primary ms-2"
             disabled={loading}
           >
-            Try Again
+            {loading ? "Searching..." : "Search"}
           </button>
+        </form>
         </div>
       )}
 
