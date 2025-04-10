@@ -14,6 +14,13 @@ const ResultsSection = ({ results, onPageChange }) => {
     }
   }, [results]);
 
+  const toggleSummary = (index) => {
+    setExpandedSummaries(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
       <h2 className="results-title">Search Results</h2>
@@ -30,7 +37,19 @@ const ResultsSection = ({ results, onPageChange }) => {
           <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
           <p><strong>Matching Attachments:</strong> {docket.attachments ? `${docket.attachments.match}/${docket.attachments.total}` : "Unknown"}</p>
           <p>
-            <strong>Summary:</strong> {docket.summary ? (docket.summary.length > 200 ? `${docket.summary.substring(0, 200)}...` : docket.summary) : "No summary available"}
+            <strong>Summary:</strong> {docket.summary ? (
+              <>
+                {expandedSummaries[index] ? docket.summary : docket.summary.substring(0, 200)}
+                {docket.summary.length > 200 && (
+                  <span 
+                    onClick={() => toggleSummary(index)} 
+                    style={{color: '#007bff', cursor: 'pointer'}}
+                  >
+                    {expandedSummaries[index] ? ' Show less' : '... Show more'}
+                  </span>
+                )}
+              </>
+            ) : "No summary available"}
           </p>
           <p>
             <strong>Date Modified:</strong> { docket.timelineDates && docket.timelineDates.dateModified ? new Date(docket.timelineDates.dateModified).toLocaleDateString() : docket.dateModified ? new Date(docket.dateModified).toLocaleDateString() : "Unknown"}
