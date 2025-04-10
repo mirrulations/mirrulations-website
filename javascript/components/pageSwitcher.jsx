@@ -56,11 +56,17 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
                   className="page-link"
                   onClick={() => onPageChange(number)}
                   disabled={number === current_page}
+                  aria-disabled={number === current_page}
+                  style={{
+                    cursor: number === current_page ? "default" : "pointer",
+                    pointerEvents: number === current_page ? "none" : "auto"
+                  }}
                 >
                   {number}
                 </button>
               </li>
             ))}
+
 
             {/* {arrowButtons.slice(2).map((arrow) => (
               <li className={`page-item ${arrow.disabled ? "disabled" : ""}`} key={arrow.text}>
