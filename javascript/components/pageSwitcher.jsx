@@ -45,6 +45,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
                   {arrow.text}
                 </button>
               </li>
+              
             ))} */}
 
             {pageNumbers.map((number) => (

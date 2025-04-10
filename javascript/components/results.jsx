@@ -55,6 +55,7 @@ const ResultsSection = ({ results, onPageChange }) => {
           </div>
         </div>
       ))}
+      
       <PageSwitcher
         current_page={results.currentPage + 1} // Display as 1-based
         total_pages={results.totalPages}

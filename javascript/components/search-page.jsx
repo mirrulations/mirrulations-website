@@ -101,6 +101,7 @@ const SearchPage = () => {
       setError("Please enter a search term.");
     }
     };
+    
   const handlePageChange = (newPageNumber) => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Add this line
     setSearchParams({ q: searchTerm, page: newPageNumber + 1 }); // 1-based for URL
