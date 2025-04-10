@@ -4,6 +4,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   if (total_pages <= 1) {
     return null;
   }
+  // Ensure only 10 pages are shown, if total pages are less than 10, show all
   const maxPagesToShow = total_pages < 10 ? total_pages : 10;
   const pageNumbers = [];
     
@@ -13,7 +14,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
 
   // Adjust if we're at the end
   if (endPage > total_pages) {
-    endPage = maxPagesToShow;
+    endPage = maxPagesToShow ;
     startPage = Math.max(1, endPage - (maxPagesToShow - 1));
   }
 
