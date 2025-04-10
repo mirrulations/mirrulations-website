@@ -20,14 +20,16 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
+  const currentPageNum = Number(current_page);
+    const totalPagesNum = Number(total_pages);
 
   const arrowButtons = [
-    { text: "<<", page: 1, disabled: Number(current_page) === 0 },
-    { text: "<", page: Number(current_page - 1) , disabled: Number(current_page) === 0 },
-    { text: ">", page: Number(current_page + 1) , disabled: Number(current_page) === Number(total_pages) },
-    { text: ">>", page: Number(total_pages), disabled: Number(current_page) === Number(total_pages) },
+    { text: "<<", page: 1, disabled: currentPageNum === 1 },
+    { text: "<", page: Number(current_page - 1), disabled: currentPageNum === 1 },
+    { text: ">", page: Number(current_page) + 1, disabled: currentPageNum + 1 ===  totalPagesNum},
+    { text: ">>", page: Number(total_pages), disabled: currentPageNum + 1 ===  totalPagesNum},
   ];
-
+  
   return (
     <section id="page_switcher_section" className="container mt-4">
       <div id="page_switcher_container" className="container">
