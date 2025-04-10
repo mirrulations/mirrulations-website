@@ -10,21 +10,12 @@
   },
   "dependencies": {
     "@types/cookie": "^0.6.0",
-<<<<<<< HEAD
-    "amazon-cognito-identity-js": "^6.3.15",
-    "bootstrap": "^5.3.5",
-    "cookie": "^1.0.2",
-    "dotenv": "^16.4.7",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-=======
     "amazon-cognito-identity-js": "^6.3.12",
     "bootstrap": "^5.3.5",
     "cookie": "^1.0.2",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
->>>>>>> 212a497b7f3b3b544c596876ec03ddb6d87c555e
     "react-oidc-context": "^3.2.0",
     "react-router-dom": "^7.5.0",
     "set-cookie-parser": "^2.7.1",
