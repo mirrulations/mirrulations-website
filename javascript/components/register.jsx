@@ -31,7 +31,7 @@ const Register = () => {
         uppercase: /[A-Z]/.test(password),
         lowercase: /[a-z]/.test(password),
         number: /\d/.test(password),
-        specialChar: /[@$!%*?&]/.test(password),
+        specialChar: /[@$!%*?&#]/.test(password),
     };
 
     const isPasswordValid = Object.values(passwordChecks).every((check) => check);
@@ -190,7 +190,7 @@ const Register = () => {
                         </li>
                         <li>
                             <FontAwesomeIcon icon={passwordChecks.specialChar ? faCheck : faTimes} className={passwordChecks.specialChar ? "text-success" : "text-danger"} />
-                            At least one special character (@, $, !, %, *, ?, &)
+                            At least one special character (@, $, !, %, *, ?, &, #)
                         </li>
                     </ul>
 
