@@ -22,10 +22,10 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   }
 
   const arrowButtons = [
-    { text: "<<", page: 1, disabled: current_page === 0 },
-    { text: "<", page: current_page - 1, disabled: current_page === 0 },
-    { text: ">", page: current_page + 1, disabled: current_page === total_pages },
-    { text: ">>", page: total_pages, disabled: current_page === total_pages },
+    { text: "<<", page: 1, disabled: Number(current_page) === 0 },
+    { text: "<", page: Number(current_page) - 1, disabled: Number(current_page) === 0 },
+    { text: ">", page: Number(current_page) + 1, disabled: Number(current_page) === Number(total_pages) },
+    { text: ">>", page: Number(total_pages), disabled: Number(current_page) === Number(total_pages) },
   ];
 
   return (
