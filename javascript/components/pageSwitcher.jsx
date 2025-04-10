@@ -5,17 +5,16 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
     return null;
   }
   // Ensure only 10 pages are shown, if total pages are less than 10, show all
-  const maxPagesToShow = total_pages < 10 ? total_pages : 10;
   const pageNumbers = [];
     
   // Calculate initial start and end pages (1-based)
-  let startPage = Math.max(1, current_page - Math.floor((maxPagesToShow - 1) / 2));
-  let endPage = startPage + maxPagesToShow - 1;
+  let startPage = Math.max(1, current_page - Math.floor((total_pages - 1) / 2));
+  let endPage = startPage + total_pages - 1;
 
   // Adjust if we're at the end
   if (endPage > total_pages) {
-    endPage = maxPagesToShow ;
-    startPage = Math.max(1, endPage - (maxPagesToShow - 1));
+    endPage = total_pages ;
+    startPage = Math.max(1, endPage - (total_pages - 1));
   }
 
   for (let i = startPage; i <= endPage; i++) {
@@ -25,8 +24,8 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
   const arrowButtons = [
     { text: "<<", page: 1, disabled: current_page === 0 },
     { text: "<", page: current_page - 1, disabled: current_page === 0 },
-    { text: ">", page: current_page + 1, disabled: current_page >= maxPagesToShow },
-    { text: ">>", page: maxPagesToShow, disabled: current_page === maxPagesToShow },
+    { text: ">", page: current_page + 1, disabled: current_page >= total_pages -1 },
+    { text: ">>", page: total_pages, disabled: current_page === total_pages },
   ];
 
   return (
