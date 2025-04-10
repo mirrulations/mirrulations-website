@@ -47,26 +47,23 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
               </li>
             ))} */}
 
-            {pageNumbers.map((number) => (
-              <li
-                className={`page-item ${number === current_page ? "active" : ""}`}
-                key={number}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => onPageChange(number)}
-                  disabled={number === current_page}
-                  aria-disabled={number === current_page}
-                  style={{
-                    cursor: number === current_page ? "default" : "pointer",
-                    pointerEvents: number === current_page ? "none" : "auto"
-                  }}
+            {pageNumbers.map((number) => {
+              const isActive = number === current_page;
+              return (
+                <li
+                  key={number}
+                  className={`page-item ${isActive ? "active disabled" : ""}`}
                 >
-                  {number}
-                </button>
-              </li>
-            ))}
-
+                  <button
+                    className="page-link"
+                    onClick={() => onPageChange(number)}
+                    disabled={isActive}
+                  >
+                    {number}
+                  </button>
+                </li>
+              );
+            })}
 
             {/* {arrowButtons.slice(2).map((arrow) => (
               <li className={`page-item ${arrow.disabled ? "disabled" : ""}`} key={arrow.text}>
