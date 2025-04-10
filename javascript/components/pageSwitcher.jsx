@@ -62,7 +62,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
               </li>
             ))}
 
-            {arrowButtons.slice(2).map((arrow) => (
+            {/* {arrowButtons.slice(2).map((arrow) => (
               <li className={`page-item ${arrow.disabled ? "disabled" : ""}`} key={arrow.text}>
                 <button
                   className="page-link"
@@ -72,7 +72,7 @@ const PageSwitcher = ({ current_page, total_pages, onPageChange }) => {
                   {arrow.text}
                 </button>
               </li>
-            ))}
+            ))} */}
           </ul>
         </nav>
       </div>
