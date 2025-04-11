@@ -6,7 +6,7 @@ import hammerIcon from "../../icons/hammer.png";
 import pencilIcon from "../../icons/pencil.png";
 import TimelineModal from "./timelineModal";
 
-const ResultsSection = ({ results }) => {
+const ResultsSection = ({ results, onPageChange }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
@@ -39,7 +39,7 @@ const ResultsSection = ({ results }) => {
               </p>
               <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
               <p><strong>Matching Attachments:</strong> {docket.attachments ? `${docket.attachments.match}/${docket.attachments.total}` : "Unknown"}</p>
-              
+              <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
               <TimelineModal key={docket.id} timelineDates={docket.timelineDates}/>
             </div>
@@ -55,7 +55,7 @@ const ResultsSection = ({ results }) => {
           </div>
         </div>
       ))}
-      <PageSwitcher current_page={results.currentPage} total_pages={results.totalPages}/>
+      <PageSwitcher current_page={Number(results.currentPage) + 1} total_pages={results.totalPages} onPageChange={(page) => onPageChange(page - 1)}/>
     </div>
   );
 };
