@@ -20,6 +20,19 @@ const ResultsSection = ({ results, onPageChange }) => {
     return Number(num1/num2).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:decimalPlaces})
   }
 
+  const getPercentHTML = (match, total, decimalPlaces, noneString) => {
+    if (total === 0) {
+      return (
+        <span> {noneString}</span>
+      )
+    }
+
+    return (<>
+      <span> {match}/{total}</span>
+      <span> ({getPercentage(match, total, decimalPlaces)})</span>
+    </>)
+  }
+
   useEffect(() => {
     if (results.dockets.length > 0) {
       setIsVisible(true);
@@ -44,13 +57,11 @@ const ResultsSection = ({ results, onPageChange }) => {
               </p>
               <p>
                 <strong>Matching Comments:</strong> 
-                <span> {docket.comments.match}/{docket.comments.total}</span>
-                <span> ({getPercentage(docket.comments.match, docket.comments.total, 2)})</span>
+                {getPercentHTML(docket.comments.match, docket.comments.total, 2, "No comments on this docket")}
               </p>
               <p>
                 <strong>Matching Attachments:</strong>
-                <span> {docket.attachments ? `${docket.attachments.match}/${docket.attachments.total}` : "Unknown"}</span>
-                <span> ({getPercentage(docket.attachments.match, docket.attachments.total, 2)})</span>
+                {getPercentHTML(docket.attachments.match, docket.attachments.total, 2, "No attachments on this docket's comments")}
               </p>
               <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
