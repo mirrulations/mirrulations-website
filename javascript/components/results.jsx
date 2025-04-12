@@ -6,7 +6,7 @@ import hammerIcon from "../../icons/hammer.png";
 import pencilIcon from "../../icons/pencil.png";
 import TimelineModal from "./timelineModal";
 
-const ResultsSection = ({ results, onPageChange }) => {
+const ResultsSection = ({ results, onPageChange, searchTerm }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
@@ -21,6 +21,18 @@ const ResultsSection = ({ results, onPageChange }) => {
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [results]);
+
+  const get_regulations_comments_link = (id, num_of_comments) => {
+    if (num_of_comments === 0) {
+      return (<span>Matching Comments</span>)
+    }
+    
+    const query_params = new URLSearchParams()
+    query_params.append("filter", searchTerm)
+    return (
+      <a href={`https://www.regulations.gov/docket/${id}/comments?${query_params.toString()}`}>Matching Comments</a>
+    )
+  }
 
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
@@ -37,7 +49,7 @@ const ResultsSection = ({ results, onPageChange }) => {
                   {docket.id}
                 </a>
               </p>
-              <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
+              <p><strong>{get_regulations_comments_link(docket.id, docket.comments.match)}:</strong> {docket.comments.match}/{docket.comments.total}</p>
               <p><strong>Matching Attachments:</strong> {docket.attachments ? `${docket.attachments.match}/${docket.attachments.total}` : "Unknown"}</p>
               <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
