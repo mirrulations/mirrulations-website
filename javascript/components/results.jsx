@@ -15,12 +15,12 @@ const ResultsSection = ({ results, onPageChange }) => {
     return isRulemaking ? hammerIcon : pencilIcon;
   };
 
-  const getPercentage = (num1, num2, decimalPlaces) => {
+  const getPercentage = (numerator, denominator, decimalPlaces) => {
     // line from https://stackoverflow.com/a/45163573
-    return Number(num1/num2).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:decimalPlaces})
+    return Number(numerator/denominator).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:decimalPlaces})
   }
 
-  const getPercentHTML = (match, total, decimalPlaces, noneString) => {
+  const getPercentHTML = (match, total, percentString, noneString) => {
     if (total === 0) {
       return (
         <span> {noneString}</span>
@@ -29,7 +29,7 @@ const ResultsSection = ({ results, onPageChange }) => {
 
     return (<>
       <span> {match}/{total}</span>
-      <span> ({getPercentage(match, total, decimalPlaces)})</span>
+      <span> ({percentString})</span>
     </>)
   }
 
@@ -39,6 +39,8 @@ const ResultsSection = ({ results, onPageChange }) => {
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [results]);
+
+  
 
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
@@ -57,11 +59,19 @@ const ResultsSection = ({ results, onPageChange }) => {
               </p>
               <p>
                 <strong>Matching Comments:</strong> 
-                {getPercentHTML(docket.comments.match, docket.comments.total, 2, "No comments on this docket")}
+                {getPercentHTML(
+                  docket.comments.match, docket.comments.total,
+                  getPercentage(docket.comments.match, docket.comments.total, 2),
+                  "No comments on this docket"
+                )}
               </p>
               <p>
                 <strong>Matching Attachments:</strong>
-                {getPercentHTML(docket.attachments.match, docket.attachments.total, 2, "No attachments on this docket's comments")}
+                {getPercentHTML(
+                  docket.attachments.match, docket.attachments.total,
+                  getPercentage(docket.attachments.match, docket.attachments.total, 2),
+                  "No comments with attachments on this docket"
+                )}
               </p>
               <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
