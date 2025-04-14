@@ -6,7 +6,7 @@ import hammerIcon from "../../icons/hammer.png";
 import pencilIcon from "../../icons/pencil.png";
 import TimelineModal from "./timelineModal";
 
-const ResultsSection = ({ results, onPageChange }) => {
+const ResultsSection = ({ results, onPageChange, searchTerm }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
@@ -33,14 +33,24 @@ const ResultsSection = ({ results, onPageChange }) => {
     </>)
   }
 
+  const getRegulationsCommentsLink = (id, num_of_comments) => {
+    if (num_of_comments === 0) {
+      return (<span>Matching Comments</span>)
+    }
+    
+    const query_params = new URLSearchParams()
+    query_params.append("filter", searchTerm)
+    return (
+      <a href={`https://www.regulations.gov/docket/${id}/comments?${query_params.toString()}`}>Matching Comments</a>
+    )
+  }
+
   useEffect(() => {
     if (results.dockets.length > 0) {
       setIsVisible(true);
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [results]);
-
-  
 
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
@@ -58,7 +68,7 @@ const ResultsSection = ({ results, onPageChange }) => {
                 </a>
               </p>
               <p>
-                <strong>Matching Comments:</strong> 
+                <strong>{getRegulationsCommentsLink(docket.id, docket.comments.total)}:</strong> 
                 {getPercentHTML(
                   docket.comments.match, docket.comments.total,
                   getPercentage(docket.comments.match, docket.comments.total, 2),
