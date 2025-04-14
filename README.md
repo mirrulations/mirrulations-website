@@ -79,49 +79,12 @@ npm run dev
     - Right click on your root directory.
     - Click _**New File**_.
     - Name it `vite.config.js`.
-3. Inside your _**vite.config.js**_ file put:
-``` 
-import { defineConfig, loadEnv } from 'vite';
-
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), 'VITE_');
-
-    return defineConfig({
-        server: {
-            host: 'localhost',
-            port: 5500
-        },
-        define: {
-            'import.meta.env': {
-                ...env,
-            }
-        }
-    });
-});
-```
-4. Inside the _**package.json**_ file put:
-```
-{
-  "name": "mirrulations-website",
-  "version": "1.0.0",
-  "description": "Website repo for Mirrulations",
-  "main": "app.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "vite": "^6.1.0"
-  }
-}
-```
-5. Make a _**.env**_ file:
+3. Make a _**.env**_ file:
     - Right click in your root directory.
     - Name it `.env`.
     - Inside put `VITE_GATEWAY_API_URL=(Your API GATEWAY LINK HERE)`.
-6. To run locally type `npm run dev`.
-7. Start Live Server at port `5500`.
+4. To run locally type `npm run dev`.
+5. Start Live Server at port `5500`.
 
 ### <ins>How To Create a Github Actions Workflow:</ins>
 

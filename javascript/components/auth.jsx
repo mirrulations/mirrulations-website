@@ -72,6 +72,17 @@ const Authentication = () => {
                 setIsLoading(false);
                 setStatusMessage(err.message || "Authentication failed");
             },
+            newPasswordRequired: (userAttributes, requiredAttributes) => {
+                console.log("New password required:", userAttributes);
+                setIsLoading(false);
+                
+                // Temporarily store the Cognito user and user attributes
+                window.newPasswordCognitoUser = cognitoUser;
+                window.userAttributes = userAttributes;
+            
+                // Redirect to the "Change Password" page
+                navigate("/change-password");
+            },
         });
     };
 
@@ -141,12 +152,7 @@ const Authentication = () => {
                             {statusMessage}
                         </p>
                     )}
-
-                    {/* Register Link */}
-                    <p id="register_link" className="text-center mt-3">
-                        Don't have an account? <a href="/register">Register here</a>
-                    </p>
-
+                    
                     {/* Footer Attribution */}
                     <div className="footer mt-5 text-center">
                         <small className="text-muted">
