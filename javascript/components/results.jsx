@@ -2,8 +2,8 @@ import PageSwitcher from "./pageSwitcher";
 import React, { useEffect, useState, useRef } from "react";
 import "/styles/results.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import hammerIcon from "../../icons/hammer.png";
-import pencilIcon from "../../icons/pencil.png";
+import hammerIcon from "../../assets/icons/hammer.png";
+import pencilIcon from "../../assets/icons/pencil.png";
 import TimelineModal from "./timelineModal";
 
 const ResultsSection = ({ results, onPageChange, searchTerm }) => {
