@@ -53,6 +53,7 @@ const Authentication = () => {
 
         const cognitoUser = new CognitoUser(userData);
         if (import.meta.env.VITE_LOCAL) {
+            // the cognito-local library only supports this auth flow
             cognitoUser.setAuthenticationFlowType("USER_PASSWORD_AUTH");
         }
 
