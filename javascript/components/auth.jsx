@@ -6,6 +6,7 @@ import { AuthenticationDetails, CognitoUserPool, CognitoUser } from "amazon-cogn
 
 //cognito user pool data, in env
 const poolData = {
+    endpoint: import.meta.env.VITE_COGNITO_USER_POOL_ENDPOINT,
     UserPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
     ClientId: import.meta.env.VITE_COGNITO_CLIENT_ID,
 };
@@ -51,6 +52,10 @@ const Authentication = () => {
         };
 
         const cognitoUser = new CognitoUser(userData);
+        if (import.meta.env.VITE_LOCAL) {
+            // the cognito-local library only supports this auth flow
+            cognitoUser.setAuthenticationFlowType("USER_PASSWORD_AUTH");
+        }
 
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: (result) => {
