@@ -46,9 +46,17 @@ const ChangePassword = () => {
 
     cognitoUser.completeNewPasswordChallenge(newPassword, {}, {
       onSuccess: (result) => {
-        setStatusMessage({ text: "Password changed successfully!", type: "success" }); // Set success type
+        {statusMessage.text && (
+          <p
+            className={`mt-3 text-center ${
+              statusMessage.type === "success" ? "text-success" : "text-danger"
+            }`}
+          >
+            {statusMessage.text}
+          </p>
+        )}
         setTimeout(() => {
-          navigate("/search-page");
+          navigate("/auth");
         }, 1500);
       },
       onFailure: (err) => {
@@ -61,7 +69,8 @@ const ChangePassword = () => {
   return (
     <div className="change-password-container">
       <form onSubmit={handleChangePassword} className="login">
-        <h1>Change Password</h1>
+        <h1>Change Mirrulations Password</h1>
+        <p className="text-muted custom-text">In order to continue to Mirrulations, please create a password that adheres to all requirements below.</p>
         <div className="form-group mt-3 position-relative">
           <label htmlFor="newPassword" className="visually-hidden">New Password</label>
           <input
