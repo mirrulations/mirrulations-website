@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "/styles/auth.css";
 import { AuthenticationDetails, CognitoUserPool, CognitoUser } from "amazon-cognito-identity-js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-//cognito user pool data, in env
+// Cognito user pool data, in env
 const poolData = {
     endpoint: import.meta.env.VITE_COGNITO_USER_POOL_ENDPOINT,
     UserPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
@@ -15,6 +17,7 @@ const Authentication = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const [statusMessage, setStatusMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -29,7 +32,7 @@ const Authentication = () => {
 
     const authenticateUser = async (event) => {
         event.preventDefault();
-        
+
         // Basic validation
         if (!username || !password) {
             setStatusMessage("Please enter both username and password");
@@ -74,6 +77,17 @@ const Authentication = () => {
                 setIsLoading(false);
                 setStatusMessage(err.message || "Authentication failed");
             },
+            newPasswordRequired: (userAttributes, requiredAttributes) => {
+                console.log("New password required:", userAttributes);
+                setIsLoading(false);
+                
+                // Temporarily store the Cognito user and user attributes
+                window.newPasswordCognitoUser = cognitoUser;
+                window.userAttributes = userAttributes;
+            
+                // Redirect to the "Change Password" page
+                navigate("/change-password");
+            },
         });
     };
 
@@ -81,8 +95,8 @@ const Authentication = () => {
         <div className="login-container">
             {!isAuthenticated && (
                 <form onSubmit={authenticateUser} className="login">
-                    <h1>Mirrulations</h1>
-                    
+                    <h1>Mirrulations Login</h1>
+
                     {/* Username Field */}
                     <div className="form-group mt-3">
                         <label htmlFor="username" className="visually-hidden">Username</label>
@@ -93,48 +107,57 @@ const Authentication = () => {
                             placeholder="Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            required                        
+                            required
                         />
                     </div>
-    
+
                     {/* Password Field */}
-                    <div className="form-group mt-3">
+                    <div className="form-group mt-3 position-relative">
                         <label htmlFor="password" className="visually-hidden">Password</label>
                         <input
                             id="password"
-                            type="password"
+                            type={showPassword ? "text" : "password"} // Toggle input type based on state
                             className="form-control"
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
+                        <span
+                            className="password-toggle"
+                            onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                right: "10px",
+                                transform: "translateY(-50%)",
+                                cursor: "pointer",
+                                color: "#6c757d",
+                            }}
+                        >
+                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} /> {/* Use Font Awesome icons */}
+                        </span>
                     </div>
-    
+
                     {/* Submit Button */}
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary w-100 mt-3"
                         disabled={isLoading}
                     >
                         {isLoading ? "Logging in..." : "Login"}
                     </button>
-    
+
                     {/* Status Message */}
                     {statusMessage && (
-                        <p 
-                            id="login_status" 
+                        <p
+                            id="login_status"
                             className={`mt-3 text-center ${statusMessage.includes("success") ? "text-success" : "text-danger"}`}
                         >
                             {statusMessage}
                         </p>
                     )}
-    
-                    {/* Register Link */}
-                    <p id="register_link" className="text-center mt-3">
-                        Don't have an account? <a href="/register">Register here</a>
-                    </p>
-    
+                    
                     {/* Footer Attribution */}
                     <div className="footer mt-5 text-center">
                         <small className="text-muted">
