@@ -60,12 +60,16 @@
   font-size: 1.2rem;
 }
 
-.footer  {
+.footer {
   padding: 5px 10px;
   background-color: #fff;
-  position: absolute;
+  position: fixed; /* Change to fixed to ensure it stays at the bottom */
   bottom: 0;
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for centering */
   border-radius: 5px;
+  text-align: center; /* Ensure text is centered inside the footer */
+  width: auto; /* Adjust width as needed */
 }
 
 a.disabled {

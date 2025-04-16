@@ -8,31 +8,49 @@ This repository contains the source code for the Mirrulations Project website. T
 ```
 git clone https://github.com/mirrulations/mirrulations-website.git
 ```
-2. Install the prerequisites npm libraries
+2. Inside the _**package.json**_ file put:
 ```
-npm install dotenv vite react react-dom react-router-dom bootstrap
+{
+  "name": "mirrulations-website",
+  "version": "1.0.0",
+  "description": "Website repo for Mirrulations",
+  "main": "app.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vite": "^6.1.0"
+  }
+}
+```
+3. Install the prerequisites npm libraries
+```
+npm install dotenv vite react react-dom react-router-dom bootstrap @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
 npm install -D @vitejs/plugin-react
 ```
-3. Launch the Website
-- Create a file named “.env” in the root directory
-    - Type “VITE_GATEWAY_API_URL={GATEWAY_URL}”
-    - Your Gateway URL is the output from the last step, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy” 
-- Save the file and run this command
+4. Make a _**.env**_ file:
+    - Right click in your root directory.
+    - Make a new file, name it `.env`.
+    - Inside put `VITE_GATEWAY_API_URL=(Your API GATEWAY LINK HERE)`.
+    - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy”     
+    - Save the file and run this command:
 ```
 npm run dev
 ```
 
 ### <ins>**How To Get API Gateway Link Running On Amplify:**<ins>
-- Log on to AWS and go to the [AWS Amplify console](https://us-east-1.console.aws.amazon.com/amplify/apps).
-- Click on your app.
-- On the sidebar on the left, click the down arrow on the right side on _**Hosting**_.
-- Click on _**Environment variables**_.
-- On the top right, there should be a button that says, _**Manage Variables**_. Click it.
-- If there is already another environment variable, click _**+ Add new**_ at the bottom at the page.
-- In the box underneath Variable, put `GATEWAY_API_URL`.
-- Then, in the box underneath Value, put your `AWS API Gateway Link`.
-- Click _**Save**_.
-- Go back to your deployment and redeploy your application.
+1. Log on to AWS and go to the [AWS Amplify console](https://us-east-1.console.aws.amazon.com/amplify/apps).
+2. Click on your app.
+3. On the sidebar on the left, click the down arrow on the right side on _**Hosting**_.
+4. Click on _**Environment variables**_.
+5. On the top right, there should be a button that says, _**Manage Variables**_. Click it.
+6. If there is already another environment variable, click _**+ Add new**_ at the bottom at the page.
+7. In the box underneath Variable, put `GATEWAY_API_URL`.
+8. Then, in the box underneath Value, put your `AWS API Gateway Link`.
+9. Click _**Save**_.
+10. Go back to your deployment and redeploy your application.
     - In the top left, next to the amplify logo, click _**All apps**_.
     - Click on your app.
     - Click on the branch that you want to redeploy.
@@ -103,32 +121,14 @@ export default defineConfig(({ mode }) => {
 });
 
 ```
-4. Inside the _**package.json**_ file put:
-```
-{
-  "name": "mirrulations-website",
-  "version": "1.0.0",
-  "description": "Website repo for Mirrulations",
-  "main": "app.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "vite": "^6.1.0"
-  }
-}
-```
-
 
 ### <ins>How To Create a Github Actions Workflow:</ins>
 
 - It is important to note now and for the future that when making changes to github actions you must **push directly to upstream**.  This is typically bad practice but is required for github actions to work.  Need more information? Check out the  [Discord](https://discord.com/channels/1332506599020822620/1333536321515290646/1336078961943380030).
-- Create a directory ./github/workflows in the main repository. 
-- Create a .yml file which will contain the actions you want to complete.  Check out the template [here](https://github.com/mirrulations/CIWebTest/blob/main/.github/workflows/github-actions-demo.yml).
+1. Create a directory ./github/workflows in the main repository. 
+2. Create a .yml file which will contain the actions you want to complete.  Check out the template [here](https://github.com/mirrulations/CIWebTest/blob/main/.github/workflows/github-actions-demo.yml).
     - These commands are run from an ubuntu terminal by a “runner” created by github for this purpose
-- Create a github secret to store AWS credentials, this is accomplished in the following steps
+3. Create a github secret to store AWS credentials, this is accomplished in the following steps
     - Click _**Settings**_
     - Under _**Secrets and Variables**_ click _**Actions**_
     - Click _**New repository secret**_ and add the secret name and data
