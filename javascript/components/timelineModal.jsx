@@ -48,7 +48,7 @@ function TimelineModal({ timelineDates }) {
               {generate_date_html("Date Modified", checkedTimelineDates.dateModified, "black")}
               {generate_date_html("Date Created", checkedTimelineDates.dateCreated, "purple")}
               {generate_date_html("Date Effective", checkedTimelineDates.dateEffective, "blue")}
-              {generate_date_html("Date Closed", checkedTimelineDates.dateClosed, "red")}
+              {generate_date_html("Date Comment Closed", checkedTimelineDates.dateClosed, "red")}
               {generate_date_html("Date Comments Opened", checkedTimelineDates.dateCommentsOpened, "green")}
             </tbody>
           </table>
