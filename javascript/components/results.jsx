@@ -52,6 +52,19 @@ const ResultsSection = ({ results, updateSearch }) => {
   return (
     <div ref={resultsRef} className={`results-container mt-4 ${isVisible ? "fade-in" : ""}`}>
       <h2 className="results-title">Search Results</h2>
+      <div>
+        <select value={dateRange} onChange={handleDateChange}>
+          <option value="all">All Dates</option>
+          <option value="last6Months">Last 6 Months</option>
+          <option value="lastYear">Last Year</option>
+          <option value="last2Years">Last 2 Years</option>
+        </select>
+        <select value={sortParam} onChange={handleSortChange}>
+          <option value="matchQuality">Relevance</option>
+          <option value="comments.match">Comments Match</option>
+          <option value="attachments.match">Attachments Match</option>
+        </select>
+      </div>
       {results.dockets.map((docket, index) => (
         <div key={index} className="result-item border p-3 mb-2 rounded">
           <strong>{docket.title}</strong>
@@ -72,8 +85,7 @@ const ResultsSection = ({ results, updateSearch }) => {
           </p>
         </div>
       ))}
-      <PageSwitcher current_page={results.currentPage} total_pages={results.totalPages} />
-    </div>
+      <PageSwitcher current_page={Number(results.currentPage) + 1} total_pages={results.totalPages} onPageChange={(page) => onPageChange(page - 1)}/>    </div>
   );
 };
 
