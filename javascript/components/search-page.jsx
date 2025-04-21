@@ -209,7 +209,7 @@ const SearchPage = () => {
             className="form-select ms-2"
             style={{ width: "150px" }}
             value={searchParams.get("date") || "all"}
-            //onChange={(e) => setSearchParams(prev => ({ ...prev, date: e.target.value, page: 1 }))}
+            onChange={(e) => setSearchParams(prev => ({ ...prev, q: searchTerm, page: 1, date: e.target.value}))}
           >
             <option value="1month">Last Month</option>
             <option value="6months">Last 6 Months</option>
