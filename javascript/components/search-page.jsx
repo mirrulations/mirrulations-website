@@ -16,6 +16,7 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
+  // Check authentication on mount
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     if (!isAuthenticated) {
@@ -31,7 +32,11 @@ const SearchPage = () => {
     }
   }, [searchParams]);
 
-  const getStartDateString = (range) => {
+  const getStartDateString = (dateParam) => {
+    if (dateParam === "all") {
+      return "1900-01-01 00:00:00.000-0400";
+    }
+
     const now = new Date();
     const formatter = new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -51,39 +56,28 @@ const SearchPage = () => {
     let startMonth = month;
     let startDay = day;
 
-    switch (range) {
-      case "last month":
-        startMonth -= 1;
-        if (startMonth < 1) {
-          startMonth += 12;
-          startYear -= 1;
-        }
-        break;
-      case "last 6 months":
-        startMonth -= 6;
+    const match = dateParam.match(/^(\d+)(month|year)s?$/);
+    if (match) {
+      const num = parseInt(match[1]);
+      const unit = match[2];
+      if (unit === 'month') {
+        startMonth -= num;
         while (startMonth < 1) {
           startMonth += 12;
           startYear -= 1;
         }
-        break;
-      case "last year":
-        startYear -= 1;
-        break;
-      case "last 5 years":
-        startYear -= 5;
-        break;
-      case "last 10 years":
-        startYear -= 10;
-        break;
-      case "all time":
-        return "1900-01-01 00:00:00.000-0400";
-      default:
-        return "1900-01-01 00:00:00.000-0400";
+      } else if (unit === 'year') {
+        startYear -= num;
+      }
+    } else {
+      // Default to all time if invalid
+      return "1900-01-01 00:00:00.000-0400";
     }
 
     return `${startYear.toString().padStart(4, '0')}-${startMonth.toString().padStart(2, '0')}-${startDay.toString().padStart(2, '0')} 00:00:00.000-0400`;
   };
 
+  // Fetch search results from the API
   const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
       setError("Please enter a search term.");
@@ -95,8 +89,8 @@ const SearchPage = () => {
     setError(null);
 
     try {
-      const dateRange = searchParams.get("dateRange") || "all time";
-      const startDate = getStartDateString(dateRange);
+      const date = searchParams.get("date") || "all";
+      const startDate = getStartDateString(date);
       const endDate = "2100-01-01 00:00:00.000-0400";
 
       const query_params = new URLSearchParams();
@@ -129,8 +123,6 @@ const SearchPage = () => {
       }
 
       const data = await response.json();
-      console.log(data);
-
       if (!data || !data.dockets || (Array.isArray(data.dockets) && data.dockets.length === 0)) {
         throw new Error("No results found. Please try a different search term.");
       }
@@ -209,15 +201,15 @@ const SearchPage = () => {
           <select
             className="form-select ms-2"
             style={{ width: "150px" }}
-            value={searchParams.get("dateRange") || "all time"}
-            onChange={(e) => setSearchParams(prev => ({ ...prev, dateRange: e.target.value, page: 1 }))}
+            value={searchParams.get("date") || "all"}
+            onChange={(e) => setSearchParams(prev => ({ ...prev, date: e.target.value, page: 1 }))}
           >
-            <option value="last month">Last Month</option>
-            <option value="last 6 months">Last 6 Months</option>
-            <option value="last year">Last Year</option>
-            <option value="last 5 years">Last 5 Years</option>
-            <option value="last 10 years">Last 10 Years</option>
-            <option value="all time">All Time</option>
+            <option value="1month">Last Month</option>
+            <option value="6months">Last 6 Months</option>
+            <option value="1year">Last Year</option>
+            <option value="5years">Last 5 Years</option>
+            <option value="10years">Last 10 Years</option>
+            <option value="all">All Time</option>
           </select>
           <button
             onClick={handleSearch}
