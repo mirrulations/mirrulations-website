@@ -23,15 +23,66 @@ const SearchPage = () => {
     }
   }, [navigate]);
 
-  // Fetch results when search params change
   useEffect(() => {
     const q = searchParams.get("q");
     const page = parseInt(searchParams.get("page")) || 1;
-    
     if (q) {
       fetchResults(q, page - 1); // Convert to 0-based for API
     }
-}, [searchParams]);
+  }, [searchParams]);
+
+  const getStartDateString = (range) => {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'America/New_York',
+    });
+    const parts = formatter.formatToParts(now);
+    let year, month, day;
+    parts.forEach(part => {
+      if (part.type === 'year') year = parseInt(part.value);
+      else if (part.type === 'month') month = parseInt(part.value);
+      else if (part.type === 'day') day = parseInt(part.value);
+    });
+
+    let startYear = year;
+    let startMonth = month;
+    let startDay = day;
+
+    switch (range) {
+      case "last month":
+        startMonth -= 1;
+        if (startMonth < 1) {
+          startMonth += 12;
+          startYear -= 1;
+        }
+        break;
+      case "last 6 months":
+        startMonth -= 6;
+        while (startMonth < 1) {
+          startMonth += 12;
+          startYear -= 1;
+        }
+        break;
+      case "last year":
+        startYear -= 1;
+        break;
+      case "last 5 years":
+        startYear -= 5;
+        break;
+      case "last 10 years":
+        startYear -= 10;
+        break;
+      case "all time":
+        return "1900-01-01 00:00:00.000-0400";
+      default:
+        return "1900-01-01 00:00:00.000-0400";
+    }
+
+    return `${startYear.toString().padStart(4, '0')}-${startMonth.toString().padStart(2, '0')}-${startDay.toString().padStart(2, '0')} 00:00:00.000-0400`;
+  };
 
   const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
@@ -44,6 +95,10 @@ const SearchPage = () => {
     setError(null);
 
     try {
+      const dateRange = searchParams.get("dateRange") || "all time";
+      const startDate = getStartDateString(dateRange);
+      const endDate = "2100-01-01 00:00:00.000-0400";
+
       const query_params = new URLSearchParams();
       query_params.append("searchTerm", term);
       query_params.append("pageNumber", pageNum);
@@ -54,8 +109,8 @@ const SearchPage = () => {
       }));
       query_params.append("filterParams", JSON.stringify({
         "dateRange": {
-          "start": "2000-01-01 00:00:00.000-0400",
-          "end": "2025-03-18 00:00:00.000-0400"
+          "start": startDate,
+          "end": endDate
         },
         "docketType": "Rulemaking"
       }));
@@ -95,17 +150,17 @@ const SearchPage = () => {
     setError(null);
     const term = searchTerm.trim();
     if (term) {
-      setSearchParams({ q: term, page: 1 });
-      fetchResults(term, 0); // 0-based for API
+      setSearchParams(prev => ({ ...prev, q: term, page: 1 }));
     } else {
       setError("Please enter a search term.");
     }
-    };
+  };
+
   const handlePageChange = (newPageNumber) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Add this line
-    setSearchParams({ q: searchTerm, page: newPageNumber + 1 }); // 1-based for URL
-    fetchResults(searchTerm, newPageNumber); // 0-based for API
-    };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSearchParams({ q: searchTerm, page: newPageNumber + 1 });
+    fetchResults(searchTerm, newPageNumber);
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -122,22 +177,19 @@ const SearchPage = () => {
 
   const LoadingMessage = () => {
     const [dots, setDots] = useState("");
-  
     useEffect(() => {
       const interval = setInterval(() => {
         setDots(prev => (prev.length < 3 ? prev + "." : ""));
       }, 500);
       return () => clearInterval(interval);
     }, []);
-  
     return (
-      <p id="loading-section" className="text-center mt-3">
+      <p id="searching-section" className="text-center mt-3">
         Loading{dots} (this is harder than it looks!)
       </p>
     );
   };
-  
-  
+
   return (
     <div className="search-container p-0">
       <h1 className="logo">Mirrulations</h1>
@@ -145,7 +197,7 @@ const SearchPage = () => {
         Logout
       </button>
       <section className="search-section">
-        <div id="search" className="d-flex justify-content-center">
+        <div id="search" className="d-flex justify-content-center align-items-center">
           <input
             type="text"
             className="search-input form-control w-50"
@@ -154,6 +206,19 @@ const SearchPage = () => {
             placeholder="Enter search term"
             onKeyDown={handleKeyPress}
           />
+          <select
+            className="form-select ms-2"
+            style={{ width: "150px" }}
+            value={searchParams.get("dateRange") || "all time"}
+            onChange={(e) => setSearchParams(prev => ({ ...prev, dateRange: e.target.value, page: 1 }))}
+          >
+            <option value="last month">Last Month</option>
+            <option value="last 6 months">Last 6 Months</option>
+            <option value="last year">Last Year</option>
+            <option value="last 5 years">Last 5 Years</option>
+            <option value="last 10 years">Last 10 Years</option>
+            <option value="all time">All Time</option>
+          </select>
           <button
             onClick={handleSearch}
             className="search-button btn btn-primary ms-2"
@@ -167,7 +232,6 @@ const SearchPage = () => {
         <span> by </span><a href="https://www.flickr.com/photos/wallyg/">Wally Gobetz</a>
         <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
       </p>
-
       {loading && <LoadingMessage />}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
       {results && <ResultsSection results={results} onPageChange={handlePageChange}/>}
