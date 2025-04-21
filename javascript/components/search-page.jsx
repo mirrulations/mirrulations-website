@@ -88,6 +88,7 @@ const SearchPage = () => {
     try {
       const date = searchParams.get("date") || "all";
       const startDate = getStartDateString(date);
+      console.log(`Start date: ${startDate}`);
       const endDate = "2100-01-01 00:00:00.000-0400";
 
       const query_params = new URLSearchParams();
@@ -207,8 +208,8 @@ const SearchPage = () => {
           <select
             className="form-select ms-2"
             style={{ width: "150px" }}
-            value={searchParams.get("date") || "all"}
-            onChange={(e) => setSearchParams(prev => ({ ...prev, date: e.target.value, page: 1 }))}
+            //value={searchParams.get("date") || "all"}
+            //onChange={(e) => setSearchParams(prev => ({ ...prev, date: e.target.value, page: 1 }))}
           >
             <option value="1month">Last Month</option>
             <option value="6months">Last 6 Months</option>
