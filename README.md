@@ -8,33 +8,22 @@ This repository contains the source code for the Mirrulations Project website. T
 ```
 git clone https://github.com/mirrulations/mirrulations-website.git
 ```
-2. Inside the _**package.json**_ file put:
+2. Install the prerequisite npm libraries (Choose One To Run)
 ```
-{
-  "name": "mirrulations-website",
-  "version": "1.0.0",
-  "description": "Website repo for Mirrulations",
-  "main": "app.js",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "vite": "^6.1.0"
-  }
-}
+npm install (this will install all the dependencies in the package.json)
+npm ci (this will install all dependencies in package-lock.json)
 ```
-3. Install the prerequisites npm libraries
-```
-npm install dotenv vite react react-dom react-router-dom bootstrap @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome
-npm install -D @vitejs/plugin-react
-```
-4. Make a _**.env**_ file:
+3. Make a _**.env**_ file:
     - Right click in your root directory.
     - Make a new file, name it `.env`.
     - Inside put `VITE_GATEWAY_API_URL=(Your API GATEWAY LINK HERE)`.
-    - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy”     
+    - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy” - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy” 
+    - Also, put in your Cognito Configurations:
+        - authority, client_id, redirect_uri, response_type, scope
+        - `VITE_COGNITO_CLIENT_ID=(Cognito Client ID)`
+        - `VITE_COGNITO_USER_POOL_ID=(Cognito User Pool ID)`
+        - `region=(Your Region)`
+        - `identityPoolId=(Identity Pool ID)`
     - Save the file and run this command:
 ```
 npm run dev
@@ -80,50 +69,7 @@ npm run dev
 8. Key notes: 
    - Make sure on GitHub your fork and branch is synced up to date.
 
-
-### <ins>**How To Install A Vite Environment For Local Use:**</ins>
-1. In the terminal, type: `npm install vite`.
-2. Create a file named _**vite.config.js**_.
-    - Right click on your root directory.
-    - Click _**New File**_.
-    - Name it `vite.config.js`.
-3. Inside your _**vite.config.js**_ file put:
-``` 
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd(), 'VITE_');
-
-    return {
-        plugins: [react()],
-        resolve: {
-            alias: {
-                '@': path.resolve(__dirname, 'javascript'), // Alias to access the javascript folder easily
-                'styles': path.resolve(__dirname, 'styles') // Alias to access the styles folder easily
-            }
-        },
-        server: {
-            host: 'localhost',
-            port: 5500
-        },
-        build: {
-            outDir: 'dist', // Specifies the output directory for the build
-        },
-        define: {
-            'import.meta.env': {
-                ...env,
-            },
-            global: {},
-        },
-    };
-});
-
-```
-
 ### <ins>How To Create a Github Actions Workflow:</ins>
-
 - It is important to note now and for the future that when making changes to github actions you must **push directly to upstream**.  This is typically bad practice but is required for github actions to work.  Need more information? Check out the  [Discord](https://discord.com/channels/1332506599020822620/1333536321515290646/1336078961943380030).
 1. Create a directory ./github/workflows in the main repository. 
 2. Create a .yml file which will contain the actions you want to complete.  Check out the template [here](https://github.com/mirrulations/CIWebTest/blob/main/.github/workflows/github-actions-demo.yml).
