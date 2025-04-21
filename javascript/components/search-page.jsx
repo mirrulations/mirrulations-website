@@ -69,14 +69,12 @@ const SearchPage = () => {
         startYear -= num;
       }
     } else {
-      // Default to all time if invalid
       return "1900-01-01 00:00:00.000-0400";
     }
 
     return `${startYear.toString().padStart(4, '0')}-${startMonth.toString().padStart(2, '0')}-${startDay.toString().padStart(2, '0')} 00:00:00.000-0400`;
   };
 
-  // Fetch search results from the API
   const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
       setError("Please enter a search term.");
@@ -141,7 +139,12 @@ const SearchPage = () => {
     setError(null);
     const term = searchTerm.trim();
     if (term) {
-      setSearchParams(prev => ({ ...prev, q: term, page: 1 }));
+      setSearchParams(prev => ({
+        ...prev,
+        q: term,
+        page: 1,
+        date: searchParams.get("date") || "all"
+      }));
     } else {
       setError("Please enter a search term.");
     }
@@ -149,7 +152,11 @@ const SearchPage = () => {
 
   const handlePageChange = (newPageNumber) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setSearchParams({ q: searchTerm, page: newPageNumber + 1 });
+    setSearchParams({
+      q: searchTerm,
+      page: newPageNumber + 1,
+      date: searchParams.get("date") || "all"
+    });
     fetchResults(searchTerm, newPageNumber);
   };
 
