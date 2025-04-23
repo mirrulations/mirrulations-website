@@ -24,14 +24,13 @@
   display: flex;
   width: 60%;
   max-width: 800px;
-  color: #fff;
 }
 
 #search {
   width: 80vw;
 }
 
-#loading-section {
+#searching-section {
   color: #fff;
 }
 
