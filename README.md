@@ -10,8 +10,7 @@ git clone https://github.com/mirrulations/mirrulations-website.git
 ```
 2. Install the prerequisite npm libraries (Choose One To Run)
 ```
-npm install (this will install all the dependencies in the package.json)
-npm ci (this will install all dependencies in package-lock.json)
+npm ci (this will install all dependencies in package-lock.json without overwriting)
 ```
 3. Make a _**.env**_ file:
     - Right click in your root directory.
