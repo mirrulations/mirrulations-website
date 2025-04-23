@@ -233,7 +233,7 @@ const SearchPage = () => {
       </p>
       {loading && <LoadingMessage />}
       {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-      {results && <ResultsSection results={results} onPageChange={handlePageChange}/>}
+      {results && <ResultsSection results={results} onPageChange={handlePageChange} searchTerm={searchTerm}/>}
     </div>
   );
 };

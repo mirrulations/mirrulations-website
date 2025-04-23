@@ -2,11 +2,11 @@ import PageSwitcher from "./pageSwitcher";
 import React, { useEffect, useState, useRef } from "react";
 import "/styles/results.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import hammerIcon from "../../icons/hammer.png";
-import pencilIcon from "../../icons/pencil.png";
+import hammerIcon from "../../assets/icons/hammer.png";
+import pencilIcon from "../../assets/icons/pencil.png";
 import TimelineModal from "./timelineModal";
 
-const ResultsSection = ({ results, onPageChange }) => {
+const ResultsSection = ({ results, onPageChange, searchTerm }) => {
   const [isVisible, setIsVisible] = useState(false);
   const resultsRef = useRef(null);
 
@@ -14,6 +14,36 @@ const ResultsSection = ({ results, onPageChange }) => {
     const isRulemaking = docket.docketType === "Rulemaking";
     return isRulemaking ? hammerIcon : pencilIcon;
   };
+
+  const getPercentage = (numerator, denominator, decimalPlaces) => {
+    // line from https://stackoverflow.com/a/45163573
+    return Number(numerator/denominator).toLocaleString(undefined, {style: 'percent', minimumFractionDigits:decimalPlaces})
+  }
+
+  const getPercentHTML = (match, total, percentString, noneString) => {
+    if (total === 0) {
+      return (
+        <span> {noneString}</span>
+      )
+    }
+
+    return (<>
+      <span> {match}/{total}</span>
+      <span> ({percentString})</span>
+    </>)
+  }
+
+  const getRegulationsCommentsLink = (id, num_of_comments) => {
+    if (num_of_comments === 0) {
+      return (<span>Matching Comments</span>)
+    }
+    
+    const query_params = new URLSearchParams()
+    query_params.append("filter", searchTerm)
+    return (
+      <a href={`https://www.regulations.gov/docket/${id}/comments?${query_params.toString()}`}>Matching Comments</a>
+    )
+  }
 
   useEffect(() => {
     if (results.dockets.length > 0) {
@@ -37,8 +67,22 @@ const ResultsSection = ({ results, onPageChange }) => {
                   {docket.id}
                 </a>
               </p>
-              <p><strong>Matching Comments:</strong> {docket.comments.match}/{docket.comments.total}</p>
-              <p><strong>Matching Attachments:</strong> {docket.attachments ? `${docket.attachments.match}/${docket.attachments.total}` : "Unknown"}</p>
+              <p>
+                <strong>{getRegulationsCommentsLink(docket.id, docket.comments.total)}:</strong> 
+                {getPercentHTML(
+                  docket.comments.match, docket.comments.total,
+                  getPercentage(docket.comments.match, docket.comments.total, 2),
+                  "No comments on this docket"
+                )}
+              </p>
+              <p>
+                <strong>Matching Attachments:</strong>
+                {getPercentHTML(
+                  docket.attachments.match, docket.attachments.total,
+                  getPercentage(docket.attachments.match, docket.attachments.total, 2),
+                  "No comments with attachments on this docket"
+                )}
+              </p>
               <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
               <TimelineModal key={docket.id} timelineDates={docket.timelineDates}/>
