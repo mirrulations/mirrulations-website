@@ -21,8 +21,6 @@ npm ci (this will install all dependencies in package-lock.json without overwrit
         - authority, client_id, redirect_uri, response_type, scope
         - `VITE_COGNITO_CLIENT_ID=(Cognito Client ID)`
         - `VITE_COGNITO_USER_POOL_ID=(Cognito User Pool ID)`
-        - `region=(Your Region)`
-        - `identityPoolId=(Identity Pool ID)`
     - Save the file and run this command:
 ```
 npm run dev
