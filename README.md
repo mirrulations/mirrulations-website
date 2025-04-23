@@ -8,7 +8,7 @@ This repository contains the source code for the Mirrulations Project website. T
 ```
 git clone https://github.com/mirrulations/mirrulations-website.git
 ```
-2. Install the prerequisite npm libraries (Choose One To Run)
+2. Install the prerequisite npm libraries
 ```
 npm ci (this will install all dependencies in package-lock.json without overwriting)
 ```
