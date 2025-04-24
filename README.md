@@ -40,7 +40,31 @@ npm run dev
     3. In the next box for Variable, put `COGNITO_USER_POOL_ID`.
         - Then, underneath Value, put your `User Pool ID`
 7. Click _**Save**_.
-8. Go back to your deployment and redeploy your application.
+8. Next go to _**Build Settings**_ and edit this into the settings.
+```
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Checking environment variables..."
+        - npm ci  # Installs dependencies using package-lock.json
+    build:
+      commands:
+        - echo "VITE_GATEWAY_API_URL = $GATEWAY_API_URL" >> .env
+        - echo "VITE_COGNITO_CLIENT_ID" = $COGNITO_CLIENT_ID >> .env
+        - echo "VITE_COGNITO_USER_POOL_ID" = $COGNITO_USER_POOL_ID >> .env
+        - npm run build  # Runs Vite's production build
+  artifacts:
+    baseDirectory: dist  # Amplify should deploy only the built files
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*  # Cache node_modules to speed up subsequent builds
+```
+9. Click _**Save**_.
+10. Go back to your deployment and redeploy your application.
     - In the top left, next to the amplify logo, click _**All apps**_.
     - Click on your app.
     - Click on the branch that you want to redeploy.
@@ -80,4 +104,3 @@ Student Free Account:
 Download the Desktop App:
 1. When you get verified for your account. Under your profile icon, in the drop down menu, there should be a “download desktop app”.
 2. Once downloaded, ask for an invitation from the owner (Dr.Coleman).
-
