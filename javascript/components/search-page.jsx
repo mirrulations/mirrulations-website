@@ -10,6 +10,7 @@ const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
   const [pageNumber, setPageNumber] = useState(parseInt(searchParams.get("page")) || 1);
+  const [selectedDate, setSelectedDate] = useState(searchParams.get("date") || "all");
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,6 +34,50 @@ const SearchPage = () => {
     }
 }, [searchParams]);
 
+const getStartDateString = (dateParam) => {
+  if (dateParam === "all") {
+    return "1900-01-01 00:00:00.000-0400";
+  }
+
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'America/New_York',
+  });
+  const parts = formatter.formatToParts(now);
+  let year, month, day;
+  parts.forEach(part => {
+    if (part.type === 'year') year = parseInt(part.value);
+    else if (part.type === 'month') month = parseInt(part.value);
+    else if (part.type === 'day') day = parseInt(part.value);
+  });
+
+  let startYear = year;
+  let startMonth = month;
+  let startDay = day;
+
+  const match = dateParam.match(/^(\d+)(month|year)s?$/);
+  if (match) {
+    const num = parseInt(match[1]);
+    const unit = match[2];
+    if (unit === 'month') {
+      startMonth -= num;
+      while (startMonth < 1) {
+        startMonth += 12;
+        startYear -= 1;
+      }
+    } else if (unit === 'year') {
+      startYear -= num;
+    }
+  } else {
+    return "1900-01-01 00:00:00.000-0400";
+  }
+
+  return `${startYear.toString().padStart(4, '0')}-${startMonth.toString().padStart(2, '0')}-${startDay.toString().padStart(2, '0')} 00:00:00.000-0400`;
+};
+
   const fetchResults = async (term, pageNum = 0) => {
     if (!term?.trim()) {
       setError("Please enter a search term.");
@@ -40,10 +85,16 @@ const SearchPage = () => {
       return;
     }
 
+
     setLoading(true);
     setError(null);
 
     try {
+      const date = searchParams.get("date") || "all";
+      const startDate = getStartDateString(date);
+      console.log(`Start date: ${startDate}`);
+      const endDate = "2100-01-01 00:00:00.000-0400";
+
       const query_params = new URLSearchParams();
       query_params.append("searchTerm", term);
       query_params.append("pageNumber", pageNum);
@@ -54,10 +105,9 @@ const SearchPage = () => {
       }));
       query_params.append("filterParams", JSON.stringify({
         "dateRange": {
-          "start": "2000-01-01 00:00:00.000-0400",
-          "end": "2025-03-18 00:00:00.000-0400"
-        },
-        "docketType": "Rulemaking"
+          "start": startDate,
+          "end": endDate
+        }
       }));
 
       const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
@@ -95,15 +145,19 @@ const SearchPage = () => {
     setError(null);
     const term = searchTerm.trim();
     if (term) {
-      setSearchParams({ q: term, page: 1 });
-      fetchResults(term, 0); // 0-based for API
+      setSearchParams({
+        q: term,
+        page: 1,
+        date: selectedDate,
+      });
     } else {
       setError("Please enter a search term.");
     }
-    };
+  };
+
   const handlePageChange = (newPageNumber) => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Add this line
-    setSearchParams({ q: searchTerm, page: newPageNumber + 1 }); // 1-based for URL
+    setSearchParams({ q: searchTerm, page: newPageNumber + 1, date: searchParams.get("date") || "all" }); // 1-based for URL
     fetchResults(searchTerm, newPageNumber); // 0-based for API
     };
 
@@ -139,40 +193,52 @@ const SearchPage = () => {
   
   
   return (
-    <div className="search-container p-0">
-      <h1 className="logo">Mirrulations</h1>
-      <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
-        Logout
-      </button>
-      <section className="search-section">
-        <div id="search" className="d-flex justify-content-center">
-          <input
-            type="text"
-            className="search-input form-control w-50"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Enter search term"
-            onKeyDown={handleKeyPress}
-          />
-          <button
-            onClick={handleSearch}
-            className="search-button btn btn-primary ms-2"
-          >
-            Search
-          </button>
-        </div>
-      </section>
-      <p className="footer">
-        <a href="https://www.flickr.com/photos/wallyg/3664385777">Washington DC - Capitol Hill: United States Capitol</a>
-        <span> by </span><a href="https://www.flickr.com/photos/wallyg/">Wally Gobetz</a>
-        <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
-      </p>
-
-      {loading && <LoadingMessage />}
-      {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
-      {results && <ResultsSection results={results} onPageChange={handlePageChange} searchTerm={searchTerm}/>}
-    </div>
-  );
+      <div className="search-container p-0">
+        <h1 className="logo">Mirrulations</h1>
+        <button className="btn btn-primary position-absolute top-0 end-0 m-3" onClick={handleLogout}>
+          Logout
+        </button>
+        <section className="search-section">
+          <div id="search" className="d-flex justify-content-center align-items-center">
+            <input
+              type="text"
+              className="search-input form-control w-50"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Enter search term"
+              onKeyDown={handleKeyPress}
+            />
+            <select
+              className="form-select ms-2"
+              style={{ width: "150px" }}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              >
+              <option value="1month">Last Month</option>
+              <option value="6months">Last 6 Months</option>
+              <option value="1year">Last Year</option>
+              <option value="5years">Last 5 Years</option>
+              <option value="10years">Last 10 Years</option>
+              <option value="all">All Time</option>
+            </select>
+            <button
+              onClick={handleSearch}
+              className="search-button btn btn-primary ms-2"
+            >
+              Search!
+            </button>
+          </div>
+        </section>
+        <p className="footer">
+          <a href="https://www.flickr.com/photos/wallyg/3664385777">Washington DC - Capitol Hill: United States Capitol</a>
+          <span> by </span><a href="https://www.flickr.com/photos/wallyg/">Wally Gobetz</a>
+          <span> is licensed under </span><a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">CC BY-NC-ND 2.0</a>
+        </p>
+        {loading && <LoadingMessage />}
+        {error && <p id="error-loader" className="text-center mt-3">{error}</p>}
+        {results && <ResultsSection results={results} onPageChange={handlePageChange} searchTerm={searchTerm}/>}
+      </div>
+    );
 };
 
 export default SearchPage;
