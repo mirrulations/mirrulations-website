@@ -211,7 +211,7 @@ const getStartDateString = (dateParam) => {
             <select
               className="form-select ms-2"
               style={{ width: "150px" }}
-              value={searchDate}
+              value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               >
               <option value="1month">Last Month</option>
