@@ -28,7 +28,6 @@ const SearchPage = () => {
   useEffect(() => {
     const q = searchParams.get("q");
     const page = parseInt(searchParams.get("page")) || 1;
-    
     if (q) {
       fetchResults(q, page - 1); // Convert to 0-based for API
     }
@@ -98,17 +97,17 @@ const getStartDateString = (dateParam) => {
       query_params.append("searchTerm", term);
       query_params.append("pageNumber", pageNum);
       query_params.append("refreshResults", true);
-      query_params.append("sortParams", JSON.stringify({
+      query_params.append("sortParams", {
         "desc": true,
         "sortType": "relevance"
-      }));
-      query_params.append("filterParams", JSON.stringify({
+      });
+      query_params.append("filterParams", {
         "dateRange": {
           "start": startDate,
-          "end": endDate
-        },
-        "docketType": "Rulemaking"
-      }));
+          "end": endDate,
+          "docketType": ""
+        }
+      });
 
       const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
 
