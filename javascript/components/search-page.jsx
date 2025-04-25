@@ -85,6 +85,7 @@ const getStartDateString = (dateParam) => {
       return;
     }
 
+
     setLoading(true);
     setError(null);
 
@@ -225,7 +226,7 @@ const getStartDateString = (dateParam) => {
               onClick={handleSearch}
               className="search-button btn btn-primary ms-2"
             >
-              Search
+              Search!
             </button>
           </div>
         </section>
