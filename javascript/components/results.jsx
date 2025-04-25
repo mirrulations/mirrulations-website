@@ -86,6 +86,7 @@ const ResultsSection = ({ results, onPageChange, searchTerm }) => {
               <p><strong>Summary:</strong> {docket.summary ? (docket.summary.length > 300 ? `${docket.summary.substring(0, 300)}...` : docket.summary) : "No summary available"}</p>
               {/* Use the new TimelineModal component instead of displaying dates directly */}
               <TimelineModal key={docket.id} timelineDates={docket.timelineDates}/>
+              <p><strong>Open for comments?:</strong> {docket.isOpenForComment === true ? "Yes" : "No"}</p>
             </div>
             
             <div className="d-flex align-items-end">
