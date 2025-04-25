@@ -107,8 +107,7 @@ const getStartDateString = (dateParam) => {
         "dateRange": {
           "start": startDate,
           "end": endDate
-        },
-        "docketType": "Rulemaking"
+        }
       }));
 
       const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
