@@ -56,7 +56,8 @@ const SearchPage = () => {
         "dateRange": {
           "start": "2000-01-01 00:00:00.000-0400",
           "end": "2025-03-18 00:00:00.000-0400"
-        }
+        },
+        "docketType": "Rulemaking"
       }));
 
       const url = `${API_GATEWAY_URL}?${query_params.toString()}`;
