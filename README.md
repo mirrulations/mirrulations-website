@@ -104,3 +104,6 @@ Student Free Account:
 Download the Desktop App:
 1. When you get verified for your account. Under your profile icon, in the drop down menu, there should be a “download desktop app”.
 2. Once downloaded, ask for an invitation from the owner (Dr.Coleman).
+
+### <ins>**Note on Date Filtering**</ins>
+As of right now the date filtering is based on the date modified, not the date created.  This behavior may be updated in the future or kept as it is.
