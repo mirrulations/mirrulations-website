@@ -1,5 +1,6 @@
 # Mirrulations Website Repo
 **Authors:** Seth Coleman, Davin Glynn, Trevor Gray, Nathan Hajel, Terrell Nelson, Giovanny Teran, and Brandon Yang
+**Contributors:** Jeffery Eisenhardt, Michael Romero, Jalil Rodriguez, Francisco Figueroa, and Collin Cabral-Castro
 
 This repository contains the source code for the Mirrulations Project website. The Mirrulations Project aims to provide a user-friendly interface for searching and retrieving data from [regulations.gov](https://www.regulations.gov/). This website interacts with an AWS API Gateway to fetch and display data based on user input.
 
@@ -10,13 +11,14 @@ git clone https://github.com/mirrulations/mirrulations-website.git
 ```
 2. Install the prerequisite npm libraries
 ```
-npm ci (this will install all dependencies in package-lock.json without overwriting)
+npm ci #(this will install all dependencies in package-lock.json without overwriting)
 ```
-3. Make a _**.env**_ file:
-    - Right click in your root directory.
-    - Make a new file, name it `.env`.
+3. Create the _**.env**_
+    - Open your terminal and CD into the root directory of mirrulations-website
+    - Create the new file by running `touch .env`
+    - Edit the file by running `nano .env`
     - Inside put `VITE_GATEWAY_API_URL=(Your API GATEWAY LINK HERE)`.
-    - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0.1:3000/dummy” or “http://localost:3000/dummy”
+    - Your Gateway URL is the output from when you launch it in the API repo, it might look something like “http://127.0.0$
     - Also, put in your Cognito Configurations:
         - authority, client_id, redirect_uri, response_type, scope
         - `VITE_COGNITO_CLIENT_ID=(Cognito Client ID)`
